@@ -18,6 +18,8 @@ const SignInPage = () => {
   const [otpNumberModal, setOtpNumberModal] = useState("");
   const [newPasswordRetype, setNewPasswordRetype] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [showModalWarning, setShowModalWarning] = useState(false);
+  const [showWarning, setShowWarning] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
@@ -29,16 +31,22 @@ const SignInPage = () => {
   };
 
   const handleSignIn = () => {
-    if (policyAccepted1 && policyAccepted2) {
-      // You can add your authentication logic here, e.g., API requests to validate the user's credentials.
-      console.log("Phone Number:", phoneNumber);
-      console.log("Password:", password);
+    if (policyAccepted1) {
+      if (phoneNumber === "09123456" && password === "admin123") {
+        return;
+      }
     } else {
-      alert("Please accept the policies before signing in.");
+      setShowWarning(true);
     }
   };
 
-  const handleSubmitFormModal = () => {};
+  const handleSubmitFormModal = () => {
+    if (phoneNumberModal === "09123456") {
+      setIsModalOpen(false);
+    } else {
+      setShowModalWarning(true);
+    }
+  };
 
   return (
     <>
@@ -131,8 +139,13 @@ const SignInPage = () => {
                 onClick={handleSignIn}
                 style={{ marginTop: "30px" }}
               >
-                Đăng nhập
+                Login
               </button>
+              <div style={{ color: "red", textAlign: "center" }}>
+                {showWarning
+                  ? "Account does not exist! Please re-enter!"
+                  : ""}
+              </div>
               <div
                 style={{
                   display: "flex",
@@ -140,12 +153,12 @@ const SignInPage = () => {
                   marginTop: "10px",
                 }}
               >
-                <div style={{ cursor: 'not-allowed' }}>Đổi mật khẩu</div>
+                <div style={{ cursor: "not-allowed" }}>Change password</div>
                 <div
                   style={{ color: "#293393", cursor: "pointer" }}
                   onClick={showModal}
                 >
-                  Quên mật khẩu
+                  Forgot password?
                 </div>
               </div>
             </form>
@@ -162,11 +175,12 @@ const SignInPage = () => {
             justifyContent: "center",
             alignContent: "center",
             flexDirection: "column",
+            margin: "30px 30px",
           }}
         >
-          <p style={{ fontSize: "32px" }}>Phục hồi mật khẩu</p>
+          <p style={{ fontSize: "32px" }}>Recover password</p>
           <p style={{ color: "rgba(0, 0, 0, 0.50)" }}>
-            Nhập thông tin theo mẫu
+            Enter information by template
           </p>
           <form style={{ marginTop: "40px", marginInline: "40px" }}>
             <div style={{ display: "flex", flexDirection: "column" }}>
@@ -207,7 +221,7 @@ const SignInPage = () => {
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
               <label htmlFor="phoneNumber" className={styles["label"]}>
-                Re-type new password
+                Re-enter new password
               </label>
               <input
                 type="tel"
@@ -221,10 +235,15 @@ const SignInPage = () => {
               type="button"
               className={styles["sign-in-button"]}
               onClick={handleSubmitFormModal}
-              style={{ marginTop: "30px" }}
+              style={{ marginTop: "40px" }}
             >
-              Tiếp tục
+              Continue
             </button>
+            <div style={{ color: "red", textAlign: "center" }}>
+              {showModalWarning
+                ? "Phone number does not exist! Please re-enter!"
+                : ""}
+            </div>
           </form>
         </div>
       </Modal>
