@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from 'next/navigation'
+
 import Header from "@/components/layout/header";
 
 import styles from "./signin.module.css";
@@ -8,8 +10,10 @@ import styles from "./signin.module.css";
 import loginImage from "@/assets/images/img_login.png";
 import Image from "next/image";
 import Modal from "antd/es/modal/Modal";
+import { redirect } from "next/navigation";
 
 const SignInPage = () => {
+    const router = useRouter()
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [policyAccepted1, setPolicyAccepted1] = useState(false);
@@ -31,9 +35,9 @@ const SignInPage = () => {
   };
 
   const handleSignIn = () => {
-    if (policyAccepted1) {
+      if (policyAccepted1) {
       if (phoneNumber === "09123456" && password === "admin123") {
-        return;
+        router.push('/user')
       }
     } else {
       setShowWarning(true);
@@ -142,9 +146,7 @@ const SignInPage = () => {
                 Login
               </button>
               <div style={{ color: "red", textAlign: "center" }}>
-                {showWarning
-                  ? "Account does not exist! Please re-enter!"
-                  : ""}
+                {showWarning ? "Account does not exist! Please re-enter!" : ""}
               </div>
               <div
                 style={{
