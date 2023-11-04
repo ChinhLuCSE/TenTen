@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation";
 
 import Header from "@/components/layout/header";
 
@@ -12,8 +12,33 @@ import Image from "next/image";
 import Modal from "antd/es/modal/Modal";
 import { redirect } from "next/navigation";
 
+function sendRequest(url, method = "GET", data = null) {
+  const requestOptions = {
+    method: method,
+    headers: {
+      "Content-Type": "application/json", // Set the appropriate content type
+    },
+    body: data ? JSON.stringify(data) : null,
+  };
+
+  return fetch(url, requestOptions)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Network response was not ok (${response.status})`);
+      }
+      return response.json(); // This assumes the API returns JSON data
+    })
+    .then((data) => {
+      return data; // You can process the data here if needed
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      throw error;
+    });
+}
+
 const SignInPage = () => {
-    const router = useRouter()
+  const router = useRouter();
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [policyAccepted1, setPolicyAccepted1] = useState(false);
@@ -34,11 +59,22 @@ const SignInPage = () => {
     setIsModalOpen(false);
   };
 
-  const handleSignIn = () => {
-      if (policyAccepted1) {
-      if (phoneNumber === "09123456" && password === "admin123") {
-        router.push('/user')
-      }
+  const handleSignIn = async () => {
+    if (policyAccepted1) {
+      const response = await sendRequest(
+        "https://tenten-server.adaptable.app/",
+        "GET",
+        {
+          username: phoneNumber,
+          password: password,
+        }
+      );
+      //   router.push("/user", "POST", {
+      //     username: phoneNumber,
+      //     password: password,
+      //   });
+      console.log("aaaaa", response);
+      //   router
     } else {
       setShowWarning(true);
     }
