@@ -1,5 +1,5 @@
-const Footerr = () => {
+const Footer = () => {
     return <div className="footer-container"></div>;
 }
  
-export default Footerr;
+export default Footer;
