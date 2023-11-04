@@ -1,11 +1,13 @@
 'use-client'
 
-import { Button } from "@/components/ui/button";
+import Header from "@/components/layout/header";
+import Sidebar from "@/components/layout/sidebar";
 
 export default function Home() {
   return (
     <div>
-      Root page
+      <Header/>
+      <Sidebar/>
     </div>
   );
 }
