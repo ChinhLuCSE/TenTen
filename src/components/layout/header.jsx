@@ -16,17 +16,17 @@ const Header = ({ status }) => {
             <div className="flex items-center space-x-1">
               <ul className="hidden space-x-2 md:inline-flex">
                 <li>
-                  <div class="relative mr-4">
+                  <div className="relative mr-4">
                     <Image className="mt-3" src="/notify.svg" width={24} height={24} alt="Logo" />
-                    <span class="-top-2 absolute bg-red-600 text-white text-xs  mr-2 px-1 py-0.5 rounded-full dark:bg-red-900">
+                    <span className="-top-2 absolute bg-red-600 text-white text-xs  mr-2 px-1 py-0.5 rounded-full dark:bg-red-900">
                       101
                     </span>
                   </div>
                 </li>
                 <li>
-                  <div class="relative">
+                  <div className="relative">
                     <Image className="rounded-full" src="/avatar.svg" width={48} height={48} alt="Logo" />
-                    <span class="-bottom-1 left-8 absolute w-3.5 h-3.5 bg-green-400  dark:border-gray-800 rounded-full"></span>
+                    <span className="-bottom-1 left-8 absolute w-3.5 h-3.5 bg-green-400  dark:border-gray-800 rounded-full"></span>
                   </div>
                 </li>
               </ul>
