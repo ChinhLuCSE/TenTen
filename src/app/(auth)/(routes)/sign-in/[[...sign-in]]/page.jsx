@@ -61,14 +61,10 @@ const SignInPage = () => {
 
   const handleSignIn = async () => {
     if (policyAccepted1) {
-      const response = await sendRequest(
-        "https://tenten-server.adaptable.app/",
-        "GET",
-        {
-          username: phoneNumber,
-          password: password,
-        }
-      );
+      const response = await sendRequest("https://tenten-server.adaptable.app/", "GET", {
+        username: phoneNumber,
+        password: password,
+      });
       //   router.push("/user", "POST", {
       //     username: phoneNumber,
       //     password: password,
@@ -91,13 +87,9 @@ const SignInPage = () => {
   return (
     <>
       <Header />
-      <div
-        className={styles["body"]}
-        style={{ marginTop: "30px", marginInline: "200px" }}
-      >
+      <div className={styles["body"]} style={{ marginTop: "30px", marginInline: "200px" }}>
         <div style={{ fontSize: "32px", fontWeight: "600" }}>
-          <span>Welcome to</span>{" "}
-          <span style={{ color: "#032A94" }}>LeaveTrack</span>{" "}
+          <span>Welcome to</span> <span style={{ color: "#032A94" }}>LeaveTrack</span>{" "}
         </div>
 
         <div className={styles["login-wrap"]} style={{ marginTop: "30px" }}>
@@ -148,15 +140,8 @@ const SignInPage = () => {
                       onChange={() => setPolicyAccepted1(!policyAccepted1)}
                     />
                     <span style={{ paddingLeft: "10px" }}>
-                      I agree with the{" "}
-                      <span style={{ color: "#293393", cursor: "pointer" }}>
-                        terms of service
-                      </span>{" "}
-                      and{" "}
-                      <span style={{ color: "#293393", cursor: "pointer" }}>
-                        privacy policy
-                      </span>{" "}
-                      of LeaveTrack.
+                      I agree with the <span style={{ color: "#293393", cursor: "pointer" }}>terms of service</span> and{" "}
+                      <span style={{ color: "#293393", cursor: "pointer" }}>privacy policy</span> of LeaveTrack.
                     </span>
                   </label>
                 </div>
@@ -167,9 +152,7 @@ const SignInPage = () => {
                       checked={policyAccepted2}
                       onChange={() => setPolicyAccepted2(!policyAccepted2)}
                     />
-                    <span style={{ paddingLeft: "10px" }}>
-                      I agree to receive news from LeaveTrack.
-                    </span>
+                    <span style={{ paddingLeft: "10px" }}>I agree to receive news from LeaveTrack.</span>
                   </label>
                 </div>
               </div>
@@ -192,10 +175,7 @@ const SignInPage = () => {
                 }}
               >
                 <div style={{ cursor: "not-allowed" }}>Change password</div>
-                <div
-                  style={{ color: "#293393", cursor: "pointer" }}
-                  onClick={showModal}
-                >
+                <div style={{ color: "#293393", cursor: "pointer" }} onClick={showModal}>
                   Forgot password?
                 </div>
               </div>
@@ -217,9 +197,7 @@ const SignInPage = () => {
           }}
         >
           <p style={{ fontSize: "32px" }}>Recover password</p>
-          <p style={{ color: "rgba(0, 0, 0, 0.50)" }}>
-            Enter information by template
-          </p>
+          <p style={{ color: "rgba(0, 0, 0, 0.50)" }}>Enter information by template</p>
           <form style={{ marginTop: "40px", marginInline: "40px" }}>
             <div style={{ display: "flex", flexDirection: "column" }}>
               <label htmlFor="phoneNumber" className={styles["label"]}>
@@ -278,9 +256,7 @@ const SignInPage = () => {
               Continue
             </button>
             <div style={{ color: "red", textAlign: "center" }}>
-              {showModalWarning
-                ? "Phone number does not exist! Please re-enter!"
-                : ""}
+              {showModalWarning ? "Phone number does not exist! Please re-enter!" : ""}
             </div>
           </form>
         </div>
