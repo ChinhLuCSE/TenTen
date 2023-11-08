@@ -100,7 +100,7 @@ const data = [
   },
 ];
 
-const UserInformation = () => {
+const EmployeeManagement = () => {
   return (
     <div className="PI-container">
       <Header status={1}></Header>
@@ -114,4 +114,4 @@ const UserInformation = () => {
   );
 };
 
-export default UserInformation;
+export default EmployeeManagement;
