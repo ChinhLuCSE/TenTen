@@ -11,31 +11,7 @@ import loginImage from "@/assets/images/img_login.png";
 import Image from "next/image";
 import Modal from "antd/es/modal/Modal";
 import { redirect } from "next/navigation";
-
-function sendRequest(url, method = "GET", data = null) {
-  const requestOptions = {
-    method: method,
-    headers: {
-      "Content-Type": "application/json", // Set the appropriate content type
-    },
-    body: data ? JSON.stringify(data) : null,
-  };
-
-  return fetch(url, requestOptions)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`Network response was not ok (${response.status})`);
-      }
-      return response.json(); // This assumes the API returns JSON data
-    })
-    .then((data) => {
-      return data; // You can process the data here if needed
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-      throw error;
-    });
-}
+import { sendRequest } from "@/service/request";
 
 const SignInPage = () => {
   const router = useRouter();
@@ -59,18 +35,18 @@ const SignInPage = () => {
     setIsModalOpen(false);
   };
 
-  const handleSignIn = async () => {
+  const handleSignIn = () => {
     if (policyAccepted1) {
-      const response = await sendRequest("https://tenten-server.adaptable.app/", "GET", {
+      sendRequest("https://tenten-server.adaptable.app/auth/signin", "POST", {
         username: phoneNumber,
         password: password,
-      });
-      //   router.push("/user", "POST", {
-      //     username: phoneNumber,
-      //     password: password,
-      //   });
-      console.log("aaaaa", response);
-      //   router
+      })
+        .then((response) => {
+          console.log("aaaaa", response);
+          document.cookie = `token=${response.access_token}`;
+          router.push("/user");
+        })
+        .catch((err) => console.log("Error: ", err));
     } else {
       setShowWarning(true);
     }
@@ -87,9 +63,13 @@ const SignInPage = () => {
   return (
     <>
       <Header />
-      <div className={styles["body"]} style={{ marginTop: "30px", marginInline: "200px" }}>
+      <div
+        className={styles["body"]}
+        style={{ marginTop: "30px", marginInline: "200px" }}
+      >
         <div style={{ fontSize: "32px", fontWeight: "600" }}>
-          <span>Welcome to</span> <span style={{ color: "#032A94" }}>LeaveTrack</span>{" "}
+          <span>Welcome to</span>{" "}
+          <span style={{ color: "#032A94" }}>LeaveTrack</span>{" "}
         </div>
 
         <div className={styles["login-wrap"]} style={{ marginTop: "30px" }}>
@@ -140,8 +120,15 @@ const SignInPage = () => {
                       onChange={() => setPolicyAccepted1(!policyAccepted1)}
                     />
                     <span style={{ paddingLeft: "10px" }}>
-                      I agree with the <span style={{ color: "#293393", cursor: "pointer" }}>terms of service</span> and{" "}
-                      <span style={{ color: "#293393", cursor: "pointer" }}>privacy policy</span> of LeaveTrack.
+                      I agree with the{" "}
+                      <span style={{ color: "#293393", cursor: "pointer" }}>
+                        terms of service
+                      </span>{" "}
+                      and{" "}
+                      <span style={{ color: "#293393", cursor: "pointer" }}>
+                        privacy policy
+                      </span>{" "}
+                      of LeaveTrack.
                     </span>
                   </label>
                 </div>
@@ -152,7 +139,9 @@ const SignInPage = () => {
                       checked={policyAccepted2}
                       onChange={() => setPolicyAccepted2(!policyAccepted2)}
                     />
-                    <span style={{ paddingLeft: "10px" }}>I agree to receive news from LeaveTrack.</span>
+                    <span style={{ paddingLeft: "10px" }}>
+                      I agree to receive news from LeaveTrack.
+                    </span>
                   </label>
                 </div>
               </div>
@@ -175,7 +164,10 @@ const SignInPage = () => {
                 }}
               >
                 <div style={{ cursor: "not-allowed" }}>Change password</div>
-                <div style={{ color: "#293393", cursor: "pointer" }} onClick={showModal}>
+                <div
+                  style={{ color: "#293393", cursor: "pointer" }}
+                  onClick={showModal}
+                >
                   Forgot password?
                 </div>
               </div>
@@ -197,7 +189,9 @@ const SignInPage = () => {
           }}
         >
           <p style={{ fontSize: "32px" }}>Recover password</p>
-          <p style={{ color: "rgba(0, 0, 0, 0.50)" }}>Enter information by template</p>
+          <p style={{ color: "rgba(0, 0, 0, 0.50)" }}>
+            Enter information by template
+          </p>
           <form style={{ marginTop: "40px", marginInline: "40px" }}>
             <div style={{ display: "flex", flexDirection: "column" }}>
               <label htmlFor="phoneNumber" className={styles["label"]}>
@@ -256,7 +250,9 @@ const SignInPage = () => {
               Continue
             </button>
             <div style={{ color: "red", textAlign: "center" }}>
-              {showModalWarning ? "Phone number does not exist! Please re-enter!" : ""}
+              {showModalWarning
+                ? "Phone number does not exist! Please re-enter!"
+                : ""}
             </div>
           </form>
         </div>
