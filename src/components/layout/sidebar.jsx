@@ -11,7 +11,7 @@ import UserImage from "@/assets/images/image_user.png"
 const Sidebar = () => {
     const role = 'admin'
   return  (
-  <div>
+  <div className="w-64">
       <aside
         id="default-sidebar"
         className="fixed w-64 h-screen transition-transform -translate-x-full sm:translate-x-0 z-20 shadow-xl"
