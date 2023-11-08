@@ -1,0 +1,33 @@
+.ant-table-thead .ant-table-cell{
+    border: 0 !important;
+    background: none !important;
+    font-size: 16px;
+    font-weight: 400 !important;
+    text-align: center !important;
+}
+
+.ant-table-cell::before{
+    height: 0 !important;
+}
+
+.ant-table-tbody .ant-table-cell{
+    font-size: 16px;
+    font-weight: 500 !important;
+    border: 0 !important;
+    padding: 8px 8px !important;
+    text-align: center !important;
+}
+
+.ant-table-cell:nth-child(1){
+    font-size: 20px;
+    font-weight: bold !important;
+    border-radius: 9px 0 0 9px; 
+}
+
+.ant-table-cell:last-child{
+    border-radius: 0 9px 9px 0; 
+}
+
+.ant-table-tbody .ant-table-row:nth-child(odd){
+    background: #F0F0F0;
+}
