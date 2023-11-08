@@ -7,30 +7,7 @@ import Image from "next/image";
 import Sidebar from "@/components/layout/sidebar";
 import UserImage from "@/assets/images/image_user.png";
 
-function sendRequest(url, method = "GET", data = null) {
-  const requestOptions = {
-    method: method,
-    headers: {
-      "Content-Type": "application/json", // Set the appropriate content type
-    },
-    body: data ? JSON.stringify(data) : null,
-  };
-
-  return fetch(url, requestOptions)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`Network response was not ok (${response.status})`);
-      }
-      return response.json(); // This assumes the API returns JSON data
-    })
-    .then((data) => {
-      return data; // You can process the data here if needed
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-      throw error;
-    });
-}
+import { sendRequest } from "@/service/request";
 
 const UserInformation = () => {
   const [name, setName] = useState("Vo Cong Thanh");
