@@ -3,7 +3,7 @@
 import Header from "@/components/layout/header";
 import Sidebar from "@/components/layout/sidebar";
 
-import styles from "./styles.module.css";
+import styles from "./leave.module.css";
 import { Button, DatePicker } from "antd";
 
 const LeaveRegistration = () => {
@@ -16,11 +16,10 @@ const LeaveRegistration = () => {
       <Header status={1} />
       <Sidebar />
       <div
-        className="flex flex-col items-center justify-center"
-        style={{ marginLeft: "256px" }}
+        style={{ marginLeft: "256px", display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
       >
-        <div className="flex w-full flex-col items-center p-2 mt-14">
-          <span className="font-bold">Application for leave</span>
+        <div style={{ display: 'flex', width: '100%', flexDirection: 'column', alignItems: 'center', padding: '2px', marginTop: '50px' }}>
+          <span style={{ fontWeight: 600 }}>Application for leave</span>
         </div>
         <form className={styles["form-container"]}>
           <div
