@@ -19,20 +19,20 @@ const UserInformation = () => {
   const [editable, setEditable] = useState(false);
 
   const handleSubmit = async () => {
-    const response = await sendRequest("https://tenten-server.adaptable.app/", "PUT", {
-      name,
-      gender,
-      birthDate,
-      address,
-      role,
-    });
+    // const response = await sendRequest("https://tenten-server.adaptable.app/", "PUT", {
+    //   name,
+    //   gender,
+    //   birthDate,
+    //   address,
+    //   role,
+    // });
   
-    if (response.ok) {
-      setEditable(!editable);
-      console.log("success");
-    } else {
-      console.log("Error");
-    }
+    // if (response.ok) {
+    //   setEditable(!editable);
+    //   console.log("success");
+    // } else {
+    //   console.log("Error");
+    // }
   };
   
   const handleEditable = () => {
