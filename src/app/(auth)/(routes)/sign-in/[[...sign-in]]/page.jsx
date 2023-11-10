@@ -11,7 +11,7 @@ import loginImage from "@/assets/images/img_login.png";
 import Image from "next/image";
 import Modal from "antd/es/modal/Modal";
 import { redirect } from "next/navigation";
-import { sendRequest, sendRequestWithToken } from "@/service/request";
+import { sendRequest } from "@/service/request";
 
 const SignInPage = () => {
   const router = useRouter();
@@ -35,15 +35,15 @@ const SignInPage = () => {
     setIsModalOpen(false);
   };
 
-  const handleSignIn = async () => {
+  const handleSignIn = () => {
     if (policyAccepted1) {
       sendRequest("https://tenten-server.adaptable.app/auth/signin", "POST", {
         username: phoneNumber,
         password: password,
       })
-        .then(async (response) => {
+        .then((response) => {
           document.cookie = `token=${response.access_token}`;
-          const response1 = await sendRequestWithToken("https://tenten-server.adaptable.app/account/info", "GET")
+          // const response1 = await sendRequestWithToken("https://tenten-server.adaptable.app/account/info", "GET")
           router.push("/user");
         })
         .catch((err) => console.log("Error: ", err));
