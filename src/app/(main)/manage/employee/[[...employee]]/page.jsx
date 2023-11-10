@@ -1,64 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Header from "@/components/layout/header";
 import Sidebar from "@/components/layout/sidebar";
 import UserTable from "@/components/table/usertable";
 import Image from "next/image";
+import { sendRequest, sendRequestWithToken } from "@/service/request";
 
 import UserImage from "@/assets/images/image_user.png";
 
-import { Space, Modal } from "antd";
-
-const data = [
-  {
-    stt: "1",
-    id: "SS 2313212321",
-    name: "Vo Cong Thanh",
-    department: "Human resource",
-    gender:"Male",
-    birthDate: "23/02/1990",
-    role: "Employee",
-    leaves: "10",
-    starting_date: "23/02/2000",
-    address: "23 Ly Thuong Kiet",
-    phone: "0231592314",
-  },
-  {
-    stt: "2",
-    id: "SS 2313222321",
-    name: "Vo Cong Thanh",
-    department: "Human resource",
-    gender:"Male",
-    birthDate: "23/02/1990",
-    role: "Employee",
-    leaves: "10",
-    starting_date: "23/02/2000",
-    address: "23 Ly Thuong Kiet",
-    phone: "0231592314",
-  },
-  {
-    stt: "3",
-    id: "SS 2313211321",
-    name: "Vo Cong Thanh",
-    department: "Human resource",
-    gender:"Male",
-    birthDate: "23/02/1990",
-    role: "Employee",
-    leaves: "10",
-    starting_date: "23/02/2000",
-    address: "23 Ly Thuong Kiet",
-    phone: "0231592314",
-  },
-];
+import { Space, Modal, Spin } from "antd";
 
 const EmployeeManagement = () => {
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const formattedDate = date.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" });
+    return formattedDate;
+  };
+
   const columns = [
     {
       title: "#",
-      dataIndex: "stt",
-      key: "stt",
+      dataIndex: "rowKey",
+      render: (id, record, index) => {
+        ++index;
+        return index;
+      },
     },
     {
       title: "ID",
@@ -75,15 +43,19 @@ const EmployeeManagement = () => {
       dataIndex: "department",
       key: "department",
     },
+    // {
+    //   title: "Number of Leaves",
+    //   dataIndex: "leaves",
+    //   key: "leaves",
+    // },
     {
-      title: "Number of Leaves",
-      dataIndex: "leaves",
-      key: "leaves",
-    },
-    {
-      title: "Starting date",
-      dataIndex: "starting_date",
-      key: "starting_date",
+      title: "Birthday",
+      dataIndex: "birthday",
+      key: "birthday",
+      render: (date) => {
+        const formattedDate = formatDate(date);
+        return <span>{formattedDate}</span>;
+      },
     },
     {
       title: "Address",
@@ -91,9 +63,9 @@ const EmployeeManagement = () => {
       key: "address",
     },
     {
-      title: "Phone Number",
-      dataIndex: "phone",
-      key: "phone",
+      title: "Position",
+      dataIndex: "position",
+      key: "position",
     },
     {
       title: "Action",
@@ -119,12 +91,37 @@ const EmployeeManagement = () => {
     },
   ];
   const [selectedEmployee, setSelectedEmployee] = useState(null);
-
+  const [employee, setEmployee] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
 
+  useEffect(() => {
+    const fetchEmployee = async () => {
+      try {
+        const token = document.cookie.split("=")[1];
+        const response = await sendRequestWithToken(
+          "https://tenten-server.adaptable.app/staffs/getAll",
+          "GET",
+          null,
+          token
+        );
+
+        if (response) {
+          console.log(response);
+          setEmployee(response);
+        } else {
+          console.log("Failed to fetch information");
+        }
+      } catch (error) {
+        console.error("Error while fetching information:", error);
+      }
+    };
+
+    fetchEmployee();
+  }, []);
+
   const showUpdateModal = (id) => {
-    setSelectedEmployee(data.find(employee => employee.id === id));
+    setSelectedEmployee(employee.find((employee) => employee.id === id));
     setIsModalOpen(true);
   };
 
@@ -140,20 +137,54 @@ const EmployeeManagement = () => {
     setIsRemoveModalOpen(false);
   };
 
+  const handleSubmit = async () => {
+    const token = document.cookie.split("=")[1];
+    const response = await sendRequest(
+      "https://tenten-server.adaptable.app/staffs/update",
+      "POST",
+      selectedEmployee,
+      token
+    );
+
+    if (response) {
+      setIsModalOpen(false);
+      console.log("success");
+    } else {
+      console.log("Error");
+    }
+  };
+
+  const handleDelete = async () => {
+    const token = document.cookie.split("=")[1];
+    const response = await sendRequest(
+      "https://tenten-server.adaptable.app/staffs/delete",
+      "POST",
+      selectedEmployee.id,
+      token
+    );
+
+    if (response) {
+      setIsRemoveModalOpen(false);
+      console.log("success");
+    } else {
+      console.log("Error");
+    }
+  };
+
   return (
     <div className="PI-container">
       <Header status={1}></Header>
       <div className="flex flex-row">
         <Sidebar />
         <div className="flex mt-14 mx-auto rounded-lg p-6 shadow-lg items-center">
-          <UserTable columns={columns} data={data} />
+          {employee.length !== 0 ? <UserTable columns={columns} data={employee} /> : <Spin size="large"></Spin>}
         </div>
       </div>
       <Modal open={isModalOpen} onCancel={handleCancel} footer={null} width={1128} centered>
         <div className="flex flex-col px-9 pb-9 items-center justify-center">
           <div className="flex w-full flex-col items-center p-2 mt-8">
             <Image className="rounded-full" src={UserImage} width={128} height={32} alt="avatar"></Image>
-            <span className="font-bold ">{selectedEmployee ? selectedEmployee.name : ''}</span>
+            <span className="font-bold ">{selectedEmployee ? selectedEmployee.name : ""}</span>
             <span className="font-semibold text-gray-600">Human resources department</span>
             <span className="text-gray-600">ID: 1234567890</span>
           </div>
@@ -169,7 +200,7 @@ const EmployeeManagement = () => {
                     name="name"
                     placeholder="Name"
                     className="flex-1 py-2 outline-none w-3/4 font-semibold text-gray-500"
-                    value={selectedEmployee ? selectedEmployee.name : ''}
+                    value={selectedEmployee ? selectedEmployee.name : ""}
                     onChange={(e) => setSelectedEmployee({ ...selectedEmployee, name: e.target.value })}
                   />
                 </div>
@@ -181,7 +212,7 @@ const EmployeeManagement = () => {
                     name="gender"
                     placeholder="Enter your gender"
                     className="flex-1 py-2 outline-none w-3/4 font-semibold text-gray-500"
-                    value={selectedEmployee ? selectedEmployee.gender : ''}
+                    value={selectedEmployee ? selectedEmployee.gender : ""}
                     onChange={(e) => setSelectedEmployee({ ...selectedEmployee, gender: e.target.value })}
                   />
                 </div>
@@ -193,8 +224,8 @@ const EmployeeManagement = () => {
                     name="birthDate"
                     placeholder="Enter your birth date"
                     className="flex-1 py-2 outline-none w-3/4 font-semibold text-gray-500"
-                    value={selectedEmployee ? selectedEmployee.birthDate : ''}
-    onChange={(e) => setSelectedEmployee({ ...selectedEmployee, birthDate: e.target.value })}
+                    value={selectedEmployee ? formatDate(selectedEmployee.birthday) : ""}
+                    onChange={(e) => setSelectedEmployee({ ...selectedEmployee, birthday: e.target.value })}
                   />
                 </div>
                 <div className="relative z-0 w-full mb-6 group border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600">
@@ -205,8 +236,8 @@ const EmployeeManagement = () => {
                     name="address"
                     placeholder="Enter your address"
                     className="flex-1 py-2 outline-none w-3/4 font-semibold text-gray-500"
-                    value={selectedEmployee ? selectedEmployee.address : ''}
-    onChange={(e) => setSelectedEmployee({ ...selectedEmployee, address: e.target.value })}
+                    value={selectedEmployee ? selectedEmployee.address : ""}
+                    onChange={(e) => setSelectedEmployee({ ...selectedEmployee, address: e.target.value })}
                   />
                 </div>
                 <div className="relative z-0 w-full mb-6 group border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600">
@@ -217,8 +248,8 @@ const EmployeeManagement = () => {
                     name="role"
                     placeholder="Enter your role"
                     className="flex-1 py-2 outline-none w-3/4 font-semibold text-gray-500"
-                    value={selectedEmployee ? selectedEmployee.role : ''}
-                    disabled="true"
+                    value={selectedEmployee ? selectedEmployee.role : ""}
+                    disabled={true}
                   />
                 </div>
                 <div className="flex flex-row items-center justify-center">
@@ -233,7 +264,7 @@ const EmployeeManagement = () => {
                   <button
                     type="button"
                     className="mx-2 items-center text-white bg-blue-900 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 pt-3 pb-2.5 inline-flex text-center "
-                    onClick={handleCancel}
+                    onClick={handleSubmit}
                   >
                     <Image className="mr-2" src="/submit.svg" width={20} height={20} alt="Logo" />
                     Submit
@@ -259,7 +290,7 @@ const EmployeeManagement = () => {
             <button
               type="button"
               className="mx-4 border-2 border-transparent items-center text-white bg-blue-900 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-6 py-2 inline-flex text-center "
-              onClick={handleCancelRemove}
+              onClick={handleDelete}
             >
               Submit
             </button>
