@@ -10,6 +10,7 @@ import styles from "./signin.module.css";
 import loginImage from "@/assets/images/img_login.png";
 import Image from "next/image";
 import Modal from "antd/es/modal/Modal";
+import { redirect } from "next/navigation";
 import { sendRequest, sendRequestWithToken } from "@/service/request";
 
 const SignInPage = () => {
@@ -42,13 +43,7 @@ const SignInPage = () => {
       })
         .then(async (response) => {
           document.cookie = `token=${response.access_token}`;
-          const response1 = await sendRequestWithToken(
-            "https://tenten-server.adaptable.app/account/info",
-            "GET",
-            null,
-            response.access_token
-          );
-          console.log(response1, "aaaaaaa");
+          const response1 = await sendRequestWithToken("https://tenten-server.adaptable.app/account/info", "GET")
           router.push("/user");
         })
         .catch((err) => console.log("Error: ", err));
