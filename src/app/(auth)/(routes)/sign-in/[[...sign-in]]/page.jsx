@@ -28,10 +28,6 @@ const SignInPage = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    document.cookie = `token=temp`;
-  }, [])
-
   const showModal = () => {
     setIsModalOpen(true);
   };
