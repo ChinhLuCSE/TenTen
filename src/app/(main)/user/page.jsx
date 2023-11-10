@@ -7,7 +7,7 @@ import Image from "next/image";
 import Sidebar from "@/components/layout/sidebar";
 import UserImage from "@/assets/images/image_user.png";
 
-import { sendRequest } from "@/service/request";
+// import { sendRequest } from "@/service/request";
 
 const UserInformation = () => {
   const [name, setName] = useState("Vo Cong Thanh");
