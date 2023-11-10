@@ -26,7 +26,7 @@ const UserInformation = () => {
       address,
       role,
     });
-  
+
     if (response.ok) {
       setEditable(!editable);
       console.log("success");
@@ -34,7 +34,7 @@ const UserInformation = () => {
       console.log("Error");
     }
   };
-  
+
   const handleEditable = () => {
     setEditable(!editable);
   };
@@ -54,7 +54,7 @@ const UserInformation = () => {
           <h1 className="text-2xl my-4 font-medium">Information</h1>
           <div className="pt-5">
             <form>
-            <div className="relative z-0 w-full mb-6 group border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600">
+              <div className="relative z-0 w-full mb-6 group border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600">
                 <label className="inline-block w-1/4 text-left text-gray-600">Full Name</label>
                 <input
                   type="text"
@@ -115,8 +115,7 @@ const UserInformation = () => {
                   placeholder="Enter your role"
                   className="flex-1 py-2 outline-none w-3/4 font-semibold text-gray-500"
                   value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                  disabled={!editable}
+                  disabled="true"
                 />
               </div>
 

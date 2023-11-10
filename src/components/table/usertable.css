@@ -26,6 +26,7 @@
 
 .ant-table-cell:last-child{
     border-radius: 0 9px 9px 0; 
+    min-width: 214px;
 }
 
 .ant-table-tbody .ant-table-row:nth-child(odd){
