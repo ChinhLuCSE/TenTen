@@ -41,4 +41,10 @@
       border-radius: 5px;
     }
   }
+  .buttons-container {
+    padding-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }

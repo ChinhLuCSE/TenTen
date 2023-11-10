@@ -4,7 +4,7 @@ import Header from "@/components/layout/header";
 import Sidebar from "@/components/layout/sidebar";
 
 import styles from "./styles.module.css";
-import { DatePicker } from "antd";
+import { Button, DatePicker } from "antd";
 
 const LeaveRegistration = () => {
   const onChangeStartDate = () => {};
@@ -51,6 +51,9 @@ const LeaveRegistration = () => {
               defaultValue={"Input your reason here"}
               className={styles["input-box"]}
             />
+          </div>
+          <div className={styles['buttons-container']}>
+            <Button type="primary" style={{ backgroundColor: '#293393' }}>Submit</Button>
           </div>
         </form>
       </div>
