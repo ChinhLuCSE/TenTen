@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import Header from "@/components/layout/header";
@@ -27,6 +27,11 @@ const SignInPage = () => {
   const [showWarning, setShowWarning] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    document.cookie = `token=temp`;
+  }, [])
+
   const showModal = () => {
     setIsModalOpen(true);
   };
