@@ -7,7 +7,7 @@ import Image from "next/image";
 import Sidebar from "@/components/layout/sidebar";
 import UserImage from "@/assets/images/image_user.png";
 
-import { sendRequest, sendRequestWithToken } from "@/service/request";
+import { sendRequest } from "@/service/request";
 
 const UserInformation = () => {
   const [name, setName] = useState("Vo Cong Thanh");
@@ -19,7 +19,7 @@ const UserInformation = () => {
   const [editable, setEditable] = useState(false);
 
   const handleSubmit = async () => {
-    const response = await sendRequestWithToken("https://tenten-server.adaptable.app/", "PUT", {
+    const response = await sendRequest("https://tenten-server.adaptable.app/", "PUT", {
       name,
       gender,
       birthDate,
