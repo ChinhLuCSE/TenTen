@@ -13,8 +13,11 @@ import { usePathname } from 'next/navigation'
 
 const Sidebar = () => {
   const pathname = usePathname() // todo: implement on selected navigation option
-
-  const role = "admin";
+  const user = {
+    name: "Vo Cong Thanh",
+    role: "admin",
+    id: "1234567890"
+  }
   return (
     <div className="w-64">
       <aside
@@ -31,18 +34,18 @@ const Sidebar = () => {
               height={32}
               alt="avatar"
             ></Image>
-            <span className="font-bold ">Vo Cong Thanh</span>
-            <span className="">1234567890</span>
+            <span className="font-bold ">{user.name}</span>
+            <span className="font-semibold text-gray-500">{user.id}</span>
           </div>
           <ul className="space-y-2 font-medium">
-            {role === "admin" && (
+            {user.role=== "admin" && (
               <>
                 <li>
                   <a
-                    href="#"
-                    className="flex items-center p-2 text-gray-900 rounded-lg hover:text-white hover:bg-blue-700 dark:hover:bg-gray-700 group"
+                    href="/user"
+                    className="flex items-center p-2 text-gray-500 font-semibold rounded-lg hover:text-white hover:bg-blue-900 group"
                   >
-                    <Image src={Icon1} alt="My SVG" width={16} height={16} />
+                    <Image src={Icon1} alt="My SVG" width={24} height={24} className="svg-color"/>
                     <span className="ml-3">Personal Information</span>
                   </a>
                 </li>
@@ -51,10 +54,10 @@ const Sidebar = () => {
                 </div>
                 <li>
                   <a
-                    href="#"
-                    className="flex items-center p-2 text-gray-900 rounded-lg hover:text-white hover:bg-blue-700 dark:hover:bg-gray-700 group"
+                    href="/manage/employee"
+                    className="flex items-center p-2 text-gray-500 font-semibold rounded-lg hover:text-white hover:bg-blue-900 group"
                   >
-                    <Image src={Icon2} alt="My SVG" width={16} height={16} />
+                    <Image src={Icon2} alt="My SVG" width={24} height={24} />
                     <span className="flex-1 ml-3 whitespace-nowrap">
                       Employee Management
                     </span>
@@ -62,10 +65,10 @@ const Sidebar = () => {
                 </li>
                 <li>
                   <a
-                    href="#"
-                    className="flex items-center p-2 text-gray-900 rounded-lg hover:text-white hover:bg-blue-700 dark:hover:bg-gray-700 group"
+                    href="/manage/leave"
+                    className="flex items-center p-2 text-gray-500 font-semibold rounded-lg hover:text-white hover:bg-blue-900 group"
                   >
-                    <Image src={Icon3} alt="My SVG" width={16} height={16} />
+                    <Image src={Icon3} alt="My SVG" width={24} height={24} />
                     <span className="flex-1 ml-3 whitespace-nowrap">
                       Leave Management
                     </span>
@@ -74,9 +77,9 @@ const Sidebar = () => {
                 <li>
                   <a
                     href="#"
-                    className="flex items-center p-2 text-gray-900 rounded-lg hover:text-white hover:bg-blue-700 dark:hover:bg-gray-700 group"
+                    className="flex items-center p-2 text-gray-500 font-semibold rounded-lg hover:text-white hover:bg-blue-900 group"
                   >
-                    <Image src={Icon4} alt="My SVG" width={16} height={16} />
+                    <Image src={Icon4} alt="My SVG" width={24} height={24} />
                     <span className="flex-1 ml-3 whitespace-nowrap">
                       Statistics
                     </span>
@@ -84,14 +87,14 @@ const Sidebar = () => {
                 </li>
               </>
             )}
-            {role === "staff" && (
+            {user.role === "staff" && (
               <>
                 <li>
                   <a
-                    href="#"
-                    className="flex items-center p-2 text-gray-900 rounded-lg hover:text-white hover:bg-blue-700 dark:hover:bg-gray-700 group"
+                    href="/user"
+                    className="flex items-center p-2 text-gray-500 font-semibold rounded-lg hover:text-white hover:bg-blue-900 group"
                   >
-                    <Image src={Icon1} alt="My SVG" width={16} height={16} />
+                    <Image src={Icon1} alt="My SVG" width={24} height={24} />
                     <span className="ml-3">Personal Information</span>
                   </a>
                 </li>
@@ -100,10 +103,10 @@ const Sidebar = () => {
                 </div>
                 <li>
                   <a
-                    href="#"
-                    className="flex items-center p-2 text-gray-900 rounded-lg hover:text-white hover:bg-blue-700 dark:hover:bg-gray-700 group"
+                    href="/leave-registration"
+                    className="flex items-center p-2 text-gray-500 font-semibold rounded-lg hover:text-white hover:bg-blue-900 group"
                   >
-                    <Image src={Icon5} alt="My SVG" width={16} height={16} />
+                    <Image src={Icon5} alt="My SVG" width={24} height={24} />
                     <span className="flex-1 ml-3 whitespace-nowrap">
                       Leave Registration
                     </span>
