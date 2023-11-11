@@ -1,10 +1,15 @@
 "use client";
+import {
+  CheckCircleOutlined,
+  ExclamationCircleOutlined,
+  SyncOutlined,
+} from "@ant-design/icons";
 
 import Header from "@/components/layout/header";
 import Sidebar from "@/components/layout/sidebar";
 
 import styles from "./leave.module.css";
-import { Button, DatePicker, Modal, Space } from "antd";
+import { Button, DatePicker, Modal, Space, Tag } from "antd";
 import { useEffect, useState } from "react";
 import { sendRequestWithToken } from "@/service/request";
 import UserTable from "@/components/table/usertable";
@@ -129,6 +134,32 @@ const LeaveRegistration = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      render: (value, record) => {
+        let color, icon;
+        switch (value) {
+          case "ACCEPT":
+            color = "success";
+            icon = <CheckCircleOutlined />;
+            break;
+          case "PENDING":
+            color = "processing";
+            icon = <SyncOutlined spin />;
+            break;
+          case "REJECT":
+              color = "error";
+              icon = <ExclamationCircleOutlined />;
+              break;
+          default:
+            color = "error";
+            icon = <ExclamationCircleOutlined />;
+            break;
+        }
+        return (
+          <Tag icon={icon} color={color}>
+            {value ? value : "NO STATUS"}
+          </Tag>
+        );
+      },
     },
     {
       title: "Remaining days off",
