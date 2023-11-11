@@ -17,16 +17,12 @@ const Sidebar = () => {
   const [user, setUser] = useState({});
 
   useEffect(() => {
+    const token = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("token="))
+      .split("=")[1];
     const fetchUserInfo = async () => {
       try {
-        const token = document.cookie
-          ? document.cookie
-              .split("; ")
-              .find((row) => row.startsWith("token="))
-              .split("=")[1]
-          : "none";
-
-        console.log(token);
         const response = await sendRequestWithToken(
           "https://tenten-server.adaptable.app/account/info",
           "GET",
@@ -44,6 +40,7 @@ const Sidebar = () => {
         console.error("Error while fetching user information:", error);
       }
     };
+
     fetchUserInfo();
   }, []);
   return (
