@@ -16,44 +16,6 @@ import { sendRequest, sendRequestWithToken } from "@/service/request";
 
 import { Space, Modal, Tag } from "antd";
 
-const data = [
-  {
-    id: "SS 2313da212321",
-    status: "Approved",
-    name: "Vo Cong Thanh",
-    remaining_day: "10",
-    start_date: "23/02/2000",
-    end_date: "23/02/2000",
-    reason: "toi benh",
-  },
-  {
-    id: "SS 23132a1d2321",
-    status: "Approved",
-    name: "Vo Cong Thanh",
-    remaining_day: "10",
-    start_date: "23/02/2000",
-    end_date: "23/02/2000",
-    reason: "toi benh",
-  },
-  {
-    id: "SS 231321d2321",
-    status: "Pending",
-    name: "Vo Cong Thanh",
-    remaining_day: "10",
-    start_date: "23/02/2000",
-    end_date: "23/02/2000",
-    reason: "toi benh",
-  },
-  {
-    id: "SS 23d13212321",
-    status: "Canceled",
-    name: "Vo Cong Thanh",
-    remaining_day: "10",
-    start_date: "23/02/2000",
-    end_date: "23/02/2000",
-    reason: "toi benh",
-  },
-];
 
 const LeaveManagement = () => {
   const columns = [
@@ -103,8 +65,8 @@ const LeaveManagement = () => {
     },
     {
       title: "Remaining days off",
-      dataIndex: "remaining_day",
-      key: "remaining_day",
+      dataIndex: "numLeaveDays",
+      key: "numLeaveDays",
     },
     {
       title: "Start date",
@@ -255,7 +217,7 @@ const LeaveManagement = () => {
         <div className="flex flex-col mx-auto justify-center text-center">
           <h1 className="mt-10 text-2xl font-medium">Leave application is pending approval</h1>
           <div className="flex rounded-lg p-6 shadow-lg items-center">
-            <UserTable columns={columns} data={leave.filter((item) => item.status === "PENDING").concat(leave.filter((item) => item.status === "CANCEL"))} />
+            <UserTable columns={columns} data={leave.filter((item) => item.status !== "ACCEPT")} />
           </div>
           <h1 className="mt-12 mb-6 text-2xl font-medium">Leave application approved</h1>
           <div className="flex rounded-lg p-6 shadow-lg items-center">
