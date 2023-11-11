@@ -12,7 +12,7 @@ import Sidebar from "@/components/layout/sidebar";
 import UserTable from "@/components/table/usertable";
 import Image from "next/image";
 
-import { sendRequest, sendRequestWithToken } from "@/service/request";
+import { sendRequestWithToken } from "@/service/request";
 
 import { Space, Modal, Tag } from "antd";
 
