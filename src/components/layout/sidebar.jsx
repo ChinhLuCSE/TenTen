@@ -8,16 +8,42 @@ import Icon4 from "@/assets/icons/icon4.svg";
 import Icon5 from "@/assets/icons/icon5.svg";
 import UserImage from "@/assets/images/image_user.png";
 
-import { usePathname } from 'next/navigation'
-
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { sendRequestWithToken } from "@/service/request";
 
 const Sidebar = () => {
-  const pathname = usePathname() // todo: implement on selected navigation option
-  const user = {
-    name: "Vo Cong Thanh",
-    role: "admin",
-    id: "1234567890"
-  }
+  const [user, setUser] = useState({});
+
+  const pathname = usePathname(); // todo: implement on selected navigation option
+
+  useEffect(() => {
+    const token = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("token="))
+      .split("=")[1];
+    const fetchUserInfo = async () => {
+      try {
+        const response = await sendRequestWithToken(
+          "https://tenten-server.adaptable.app/account/info",
+          "GET",
+          null,
+          token
+        );
+
+        if (response) {
+          setUser(response);
+          console.log("sidebar", response);
+        } else {
+          console.error("Failed to fetch user information");
+        }
+      } catch (error) {
+        console.error("Error while fetching user information:", error);
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
   return (
     <div className="w-64">
       <aside
@@ -35,17 +61,23 @@ const Sidebar = () => {
               alt="avatar"
             ></Image>
             <span className="font-bold ">{user.name}</span>
-            <span className="font-semibold text-gray-500">{user.id}</span>
+            <span className="font-semibold text-gray-500">{user.code}</span>
           </div>
           <ul className="space-y-2 font-medium">
-            {user.role=== "admin" && (
+            {user.role === "ADMIN" && (
               <>
                 <li>
                   <a
                     href="/user"
                     className="flex items-center p-2 text-gray-500 font-semibold rounded-lg hover:text-white hover:bg-blue-900 group"
                   >
-                    <Image src={Icon1} alt="My SVG" width={24} height={24} className="svg-color"/>
+                    <Image
+                      src={Icon1}
+                      alt="My SVG"
+                      width={24}
+                      height={24}
+                      className="svg-color"
+                    />
                     <span className="ml-3">Personal Information</span>
                   </a>
                 </li>
@@ -87,7 +119,7 @@ const Sidebar = () => {
                 </li>
               </>
             )}
-            {user.role === "staff" && (
+            {user.role === "STAFF" && (
               <>
                 <li>
                   <a
