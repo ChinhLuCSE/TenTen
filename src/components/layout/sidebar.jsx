@@ -61,7 +61,6 @@ const Sidebar = () => {
               alt="avatar"
             ></Image>
             <span className="font-bold ">{user.name}</span>
-            <span className="font-semibold text-gray-500">{user.code}</span>
           </div>
           <ul className="space-y-2 font-medium">
             {user.role === "ADMIN" && (
