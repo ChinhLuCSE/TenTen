@@ -1,5 +1,3 @@
-import { token } from "./cookie";
-
 export function sendRequest(url, method = "GET", data = null) {
   const requestOptions = {
     method: method,
