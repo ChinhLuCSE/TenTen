@@ -90,7 +90,8 @@ const EmployeeManagement = () => {
       ),
     },
   ];
-  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [selectedEmployee, setSelectedEmployee] = useState({});
+  const [originSelectedEmployee, setOriginSelectedEmployee] = useState({});
   const [employee, setEmployee] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
@@ -98,7 +99,12 @@ const EmployeeManagement = () => {
   useEffect(() => {
     const fetchEmployee = async () => {
       try {
-        const token = document.cookie.split("=")[1];
+        const token = document.cookie
+          ? document.cookie
+              .split("; ")
+              .find((row) => row.startsWith("token="))
+              .split("=")[1]
+          : "none";
         const response = await sendRequestWithToken(
           "https://tenten-server.adaptable.app/staffs/getAll",
           "GET",
@@ -122,6 +128,7 @@ const EmployeeManagement = () => {
 
   const showUpdateModal = (id) => {
     setSelectedEmployee(employee.find((employee) => employee.id === id));
+    setOriginSelectedEmployee(employee.find((employee) => employee.id === id));
     setIsModalOpen(true);
   };
 
@@ -138,8 +145,27 @@ const EmployeeManagement = () => {
   };
 
   const handleSubmit = async () => {
-    const token = document.cookie.split("=")[1];
-    const response = await sendRequest(
+    const token = document.cookie
+      ? document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("token="))
+          .split("=")[1]
+      : "none";
+      const modifiedFields = {id: selectedEmployee.id};
+
+      if (selectedEmployee.name !== originSelectedEmployee.name) {
+        modifiedFields.name = selectedEmployee.name;
+      }
+      if (selectedEmployee.gender !== originSelectedEmployee.gender) {
+        modifiedFields.gender = selectedEmployee.gender;
+      }
+      if (selectedEmployee.birthday !== originSelectedEmployee.birthday) {
+        modifiedFields.birthday = selectedEmployee.birthday;
+      }
+      if (selectedEmployee.address !== originSelectedEmployee.address) {
+        modifiedFields.address = selectedEmployee.address;
+      }
+    const response = await sendRequestWithToken(
       "https://tenten-server.adaptable.app/staffs/update",
       "POST",
       selectedEmployee,
@@ -155,9 +181,14 @@ const EmployeeManagement = () => {
   };
 
   const handleDelete = async () => {
-    const token = document.cookie.split("=")[1];
-    const response = await sendRequest(
-      "https://tenten-server.adaptable.app/staffs/delete",
+    const token = document.cookie
+      ? document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("token="))
+          .split("=")[1]
+      : "none";
+    const response = await sendRequestWithToken(
+      "https://tenten-server.adaptable.app/staffs/delete-staff",
       "POST",
       selectedEmployee.id,
       token
