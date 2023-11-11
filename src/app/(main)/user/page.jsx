@@ -8,6 +8,7 @@ import Sidebar from "@/components/layout/sidebar";
 import UserImage from "@/assets/images/image_user.png";
 
 import { sendRequestWithToken } from "@/service/request";
+import { token } from "@/service/cookie";
 
 const UserInformation = () => {
   const [user, setUser] = useState({});
@@ -22,8 +23,6 @@ const UserInformation = () => {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const token = document.cookie.split("=")[1];
-        console.log(token);
         const response = await sendRequestWithToken(
           "https://tenten-server.adaptable.app/account/info",
           "GET",
