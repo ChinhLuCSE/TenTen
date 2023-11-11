@@ -169,7 +169,7 @@ const UserInformation = () => {
                   name="role"
                   placeholder="Enter your role"
                   className="flex-1 py-2 outline-none w-3/4 font-semibold text-gray-500"
-                  value={user.position || "Loading..."}
+                  value={user.role || "Loading..."}
                   disabled={true}
                 />
               </div>

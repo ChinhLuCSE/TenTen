@@ -1,5 +1,10 @@
 "use client";
 
+import {
+  CheckCircleOutlined,
+  ExclamationCircleOutlined,
+  SyncOutlined,
+} from "@ant-design/icons";
 import { useEffect, useState } from "react";
 
 import Header from "@/components/layout/header";
@@ -9,7 +14,7 @@ import Image from "next/image";
 
 import { sendRequest, sendRequestWithToken } from "@/service/request";
 
-import { Space, Modal } from "antd";
+import { Space, Modal, Tag } from "antd";
 
 const data = [
   {
@@ -64,6 +69,28 @@ const LeaveManagement = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      render: (value, record) => {
+        let color, icon;
+        switch (value) {
+          case "ACCEPT":
+            color = "success";
+            icon = <CheckCircleOutlined />;
+            break;
+          case "PENDING":
+            color = "processing";
+            icon = <SyncOutlined spin />;
+            break;
+          default:
+            color = "error";
+            icon = <ExclamationCircleOutlined />;
+            break;
+        }
+        return (
+          <Tag icon={icon} color={color}>
+            {value ? value : "NO STATUS"}
+          </Tag>
+        );
+      },
     },
     {
       title: "Full name",
@@ -103,7 +130,7 @@ const LeaveManagement = () => {
       key: "action",
       render: (_, record) => (
         <>
-          {record.status !== "CANCELED" && (
+          {record.status !== "REJECT" && (
             <Space size="middle">
               <button
                 type="button"
@@ -112,7 +139,7 @@ const LeaveManagement = () => {
                   if (record.status === "ACCEPT") {
                     showModal({ id: record.id, status: "PENDING" });
                   } else if (record.status === "PENDING") {
-                    showModal({ id: record.id, status: "CANCELED" });
+                    showModal({ id: record.id, status: "REJECT" });
                   }
                 }}
               >

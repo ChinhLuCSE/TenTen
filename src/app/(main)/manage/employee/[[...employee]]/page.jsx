@@ -75,7 +75,7 @@ const EmployeeManagement = () => {
           <button
             type="button"
             className="items-center text-white bg-red-700 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto px-3 py-1 inline-flex text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
-            onClick={showRemoveModal}
+            onClick={() => showRemoveModal(record.id)}
           >
             Remove
           </button>
@@ -136,7 +136,8 @@ const EmployeeManagement = () => {
     setIsModalOpen(false);
   };
 
-  const showRemoveModal = () => {
+  const showRemoveModal = (id) => {
+    setSelectedEmployee(employee.find((employee) => employee.id === id));
     setIsRemoveModalOpen(true);
   };
 
@@ -168,11 +169,14 @@ const EmployeeManagement = () => {
     const response = await sendRequestWithToken(
       "https://tenten-server.adaptable.app/staffs/update",
       "POST",
-      selectedEmployee,
+      modifiedFields,
       token
     );
-
     if (response) {
+      const updatedEmployee = employee.map((item) =>
+        item.id === selectedEmployee.id ? { ...item, ...modifiedFields } : item
+      );
+      setEmployee(updatedEmployee);
       setIsModalOpen(false);
       console.log("success");
     } else {
@@ -187,14 +191,17 @@ const EmployeeManagement = () => {
           .find((row) => row.startsWith("token="))
           .split("=")[1]
       : "none";
+    const data = {id: selectedEmployee.id}
     const response = await sendRequestWithToken(
-      "https://tenten-server.adaptable.app/staffs/delete-staff",
+      `https://tenten-server.adaptable.app/staffs/delete-staff`,
       "POST",
-      selectedEmployee.id,
+      data,
       token
     );
 
     if (response) {
+      const updatedEmployee = employee.filter((item) => item.id !== selectedEmployee.id)
+      setEmployee(updatedEmployee);
       setIsRemoveModalOpen(false);
       console.log("success");
     } else {
@@ -216,8 +223,8 @@ const EmployeeManagement = () => {
           <div className="flex w-full flex-col items-center p-2 mt-8">
             <Image className="rounded-full" src={UserImage} width={128} height={32} alt="avatar"></Image>
             <span className="font-bold ">{selectedEmployee ? selectedEmployee.name : ""}</span>
-            <span className="font-semibold text-gray-600">Human resources department</span>
-            <span className="text-gray-600">ID: 1234567890</span>
+            <span className="font-semibold text-gray-600">{selectedEmployee ? selectedEmployee.department : ""}</span>
+            <span className="text-gray-600">ID: {selectedEmployee ? selectedEmployee.id : ""}</span>
           </div>
           <div className="mt-6 w-full items-center pt-6 pb-8 px-16 shadow-2xl rounded-md">
             <h1 className="text-2xl my-4 font-medium">Information</h1>
