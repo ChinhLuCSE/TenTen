@@ -169,7 +169,7 @@ const LeaveRegistration = () => {
       title: "Reason",
       dataIndex: "reason",
       key: "reason",
-    },
+      },
   ];
 
   return (
