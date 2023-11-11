@@ -11,13 +11,9 @@ import UserImage from "@/assets/images/image_user.png";
 import { usePathname } from 'next/navigation'
 
 
-const Sidebar = () => {
+const Sidebar = ({name, role, id}) => {
   const pathname = usePathname() // todo: implement on selected navigation option
-  const user = {
-    name: "Vo Cong Thanh",
-    role: "admin",
-    id: "1234567890"
-  }
+  
   return (
     <div className="w-64">
       <aside
@@ -34,11 +30,11 @@ const Sidebar = () => {
               height={32}
               alt="avatar"
             ></Image>
-            <span className="font-bold ">{user.name}</span>
-            <span className="font-semibold text-gray-500">{user.id}</span>
+            <span className="font-bold ">{name}</span>
+            <span className="font-semibold text-gray-500">{id}</span>
           </div>
           <ul className="space-y-2 font-medium">
-            {user.role=== "admin" && (
+            {role=== "admin" && (
               <>
                 <li>
                   <a
@@ -87,7 +83,7 @@ const Sidebar = () => {
                 </li>
               </>
             )}
-            {user.role === "staff" && (
+            {role === "staff" && (
               <>
                 <li>
                   <a

@@ -42,7 +42,7 @@ const UserInformation = () => {
   return (
     <div className="PI-container">
       <Header status={1}></Header>
-      <Sidebar />
+      <Sidebar name="Vo Cong Thanh" role="staff" id="1234567890"/>
       <div className="flex flex-col items-center justify-center">
         <div className="flex w-full flex-col items-center p-2 mt-14">
           <Image className="rounded-full" src={UserImage} width={128} height={32} alt="avatar"></Image>
