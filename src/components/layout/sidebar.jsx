@@ -7,13 +7,45 @@ import Icon3 from "@/assets/icons/icon3.svg";
 import Icon4 from "@/assets/icons/icon4.svg";
 import Icon5 from "@/assets/icons/icon5.svg";
 import UserImage from "@/assets/images/image_user.png";
-
+import { useEffect, useState } from "react";
 import { usePathname } from 'next/navigation'
 
 
-const Sidebar = ({name, role, id}) => {
+const Sidebar = () => {
   const pathname = usePathname() // todo: implement on selected navigation option
-  
+
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const token = document.cookie
+          ? document.cookie
+              .split("; ")
+              .find((row) => row.startsWith("token="))
+              .split("=")[1]
+          : "none";
+
+        console.log(token);
+        const response = await sendRequestWithToken(
+          "https://tenten-server.adaptable.app/account/info",
+          "GET",
+          null,
+          token
+        );
+
+        if (response) {
+          setUser(response);
+          console.log(response);
+        } else {
+          console.error("Failed to fetch user information");
+        }
+      } catch (error) {
+        console.error("Error while fetching user information:", error);
+      }
+    };
+    fetchUserInfo();
+  }, []);
   return (
     <div className="w-64">
       <aside
@@ -30,11 +62,11 @@ const Sidebar = ({name, role, id}) => {
               height={32}
               alt="avatar"
             ></Image>
-            <span className="font-bold ">{name}</span>
-            <span className="font-semibold text-gray-500">{id}</span>
+            <span className="font-bold ">{user.name}</span>
+            <span className="font-semibold text-gray-500">{user.code}</span>
           </div>
           <ul className="space-y-2 font-medium">
-            {role=== "admin" && (
+            {user.role=== "ADMIN" && (
               <>
                 <li>
                   <a
@@ -83,7 +115,7 @@ const Sidebar = ({name, role, id}) => {
                 </li>
               </>
             )}
-            {role === "staff" && (
+            {user.role === "STAFF" && (
               <>
                 <li>
                   <a
