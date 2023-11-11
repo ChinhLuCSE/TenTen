@@ -4,9 +4,23 @@ import Header from "@/components/layout/header";
 import Sidebar from "@/components/layout/sidebar";
 
 import styles from "./leave.module.css";
-import { Button, DatePicker, Modal } from "antd";
+import { Button, DatePicker, Modal, Space } from "antd";
 import { useEffect, useState } from "react";
 import { sendRequestWithToken } from "@/service/request";
+import UserTable from "@/components/table/usertable";
+
+function formatDate(inputDate) {
+  const date = new Date(inputDate);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Month is 0-indexed
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+const inputDateString = "2023-11-12T02:57:42.561Z";
+const formattedDate = formatDate(inputDateString);
+console.log(formattedDate);
 
 const LeaveRegistration = () => {
   const [user, setUser] = useState({});
@@ -14,6 +28,7 @@ const LeaveRegistration = () => {
   const [endDate, setEndDate] = useState("");
   const [reason, setReason] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [leaves, setLeaves] = useState([]);
   const handleCancel = () => {
     setIsModalOpen(false);
   };
@@ -38,7 +53,24 @@ const LeaveRegistration = () => {
 
         if (response) {
           setUser(response);
-          console.log(response);
+
+          try {
+            const response1 = await sendRequestWithToken(
+              `https://tenten-server.adaptable.app/request/getPersonal?id=${response.id}`,
+              "GET",
+              null,
+              token
+            );
+
+            if (response1) {
+              setLeaves(response1);
+              console.log(response1);
+            } else {
+              console.error("Failed to fetch leaves data");
+            }
+          } catch (error) {
+            console.error("Error while fetching leaves data:", error);
+          }
         } else {
           console.error("Failed to fetch user information");
         }
@@ -46,7 +78,6 @@ const LeaveRegistration = () => {
         console.error("Error while fetching user information:", error);
       }
     };
-
     fetchUserInfo();
   }, []);
 
@@ -83,6 +114,67 @@ const LeaveRegistration = () => {
     if (response) console.log("leave-submit", response);
   };
 
+  const handleRemoveRegistration = () => {};
+
+  const columns = [
+    {
+      title: "#",
+      dataIndex: "rowKey",
+      render: (id, record, index) => {
+        ++index;
+        return index;
+      },
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+    },
+    {
+      title: "Remaining days off",
+      dataIndex: "numLeaveDays",
+      key: "numLeaveDays",
+    },
+    {
+      title: "Start date",
+      dataIndex: "startDate",
+      key: "startDate",
+      render: (record) => {
+        console.log('record:', record)
+        return formatDate(record);
+      },
+    },
+    {
+      title: "End date",
+      dataIndex: "endDate",
+      key: "endDate",
+      render: (record) => {
+        return formatDate(record);
+      },
+    },
+    {
+      title: "Reason",
+      dataIndex: "reason",
+      key: "reason",
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (_, record) => (
+        <Space size="middle">
+          <button
+            type="button"
+            className="items-center text-white bg-red-700 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto px-3 py-1 inline-flex text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+            onClick={handleRemoveRegistration}
+            disabled={record.status !== "PENDING"}
+          >
+            Remove
+          </button>
+        </Space>
+      ),
+    },
+  ];
+
   return (
     <div className="leave-regis-container">
       <Header status={1} />
@@ -97,7 +189,7 @@ const LeaveRegistration = () => {
         }}
       >
         <div className={styles["table-container"]}>
-
+          <UserTable columns={columns} data={leaves} />
         </div>
         <Button
           type="primary"
