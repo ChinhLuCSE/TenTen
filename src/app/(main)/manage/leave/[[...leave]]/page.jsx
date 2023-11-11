@@ -77,13 +77,21 @@ const LeaveManagement = () => {
     },
     {
       title: "Start date",
-      dataIndex: "start_date",
-      key: "start_date",
+      dataIndex: "startDate",
+      key: "startDate",
+      render: (date) => {
+        const formattedDate = formatDate(date);
+        return <span>{formattedDate}</span>;
+      },
     },
     {
       title: "End date",
-      dataIndex: "end_date",
-      key: "end_date",
+      dataIndex: "endDate",
+      key: "endDate",
+      render: (date) => {
+        const formattedDate = formatDate(date);
+        return <span>{formattedDate}</span>;
+      },
     },
     {
       title: "Reason",
@@ -95,26 +103,26 @@ const LeaveManagement = () => {
       key: "action",
       render: (_, record) => (
         <>
-          {record.status !== "Canceled" && (
+          {record.status !== "CANCELED" && (
             <Space size="middle">
               <button
                 type="button"
                 className="items-center text-white bg-red-700 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto px-3 py-1 inline-flex text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
                 onClick={() => {
-                  if (record.status === "Approved") {
-                    showModal({ id: record.id, status: "Pending" });
-                  } else if (record.status === "Pending") {
-                    showModal({ id: record.id, status: "Canceled" });
+                  if (record.status === "ACCEPT") {
+                    showModal({ id: record.id, status: "PENDING" });
+                  } else if (record.status === "PENDING") {
+                    showModal({ id: record.id, status: "CANCELED" });
                   }
                 }}
               >
                 Remove
               </button>
-              {record.status !== "Approved" && (
+              {record.status !== "ACCEPT" && (
                 <button
                   type="button"
                   className="items-center text-white bg-blue-900 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-3 py-1 inline-flex text-center "
-                  onClick={() => showModal({ id: record.id, status: "Approved" })}
+                  onClick={() => showModal({ id: record.id, status: "ACCEPT" })}
                 >
                   Approve
                 </button>
@@ -133,10 +141,15 @@ const LeaveManagement = () => {
   useEffect(() => {
     const fetchLeave = async () => {
       try {
-        const token = document.cookie.split("=")[1];
+        const token = document.cookie
+        ? document.cookie
+            .split("; ")
+            .find((row) => row.startsWith("token="))
+            .split("=")[1]
+        : "none";
         console.log(token);
         const response = await sendRequestWithToken(
-          "https://tenten-server.adaptable.app/request/getAll",
+          "https://tenten-server.adaptable.app/request/getAllRequest",
           "GET",
           null,
           token
@@ -167,31 +180,41 @@ const LeaveManagement = () => {
   };
 
   const handleConfirm = async () => {
-    const token = document.cookie.split("=")[1];
-    const response = await sendRequest(
-      "https://tenten-server.adaptable.app/request/updateStatus",
+    const token = document.cookie
+        ? document.cookie
+            .split("; ")
+            .find((row) => row.startsWith("token="))
+            .split("=")[1]
+        : "none";
+    const response = await sendRequestWithToken(
+      "https://tenten-server.adaptable.app/request/update-status",
       "POST",
       selectedLeave,
       token
     );
 
     if (response) {
+      const updatedLeave = leave.map((item) =>
+      item.id === selectedLeave.id
+        ? { ...item, status: selectedLeave.status }
+        : item
+    );
+    setLeave(updatedLeave);
       setIsModalOpen(false);
       console.log("success");
     } else {
       console.log("Error");
     }
   };
-
-  const sortedData = data.sort((a, b) => {
-    if (a.status === "Canceled" && b.status !== "Canceled") {
-      return 1;
-    } else if (a.status !== "Canceled" && b.status === "Canceled") {
-      return -1;
-    } else {
-      return 0;
+  
+  const formatDate = (dateString) => {
+    if (!dateString) {
+      return "Loading...";
     }
-  });
+
+    const date = new Date(dateString);
+    return date.toISOString().split("T")[0];
+  };
 
   return (
     <div>
@@ -201,11 +224,11 @@ const LeaveManagement = () => {
         <div className="flex flex-col mx-auto justify-center text-center">
           <h1 className="mt-10 text-2xl font-medium">Leave application is pending approval</h1>
           <div className="flex rounded-lg p-6 shadow-lg items-center">
-            <UserTable columns={columns} data={sortedData.filter((item) => item.status !== "Approved")} />
+            <UserTable columns={columns} data={leave.filter((item) => item.status === "PENDING").concat(leave.filter((item) => item.status === "CANCEL"))} />
           </div>
           <h1 className="mt-12 mb-6 text-2xl font-medium">Leave application approved</h1>
           <div className="flex rounded-lg p-6 shadow-lg items-center">
-            <UserTable columns={columns} data={sortedData.filter((item) => item.status === "Approved")} />
+            <UserTable columns={columns} data={leave.filter((item) => item.status === "ACCEPT")} />
           </div>
         </div>
       </div>
