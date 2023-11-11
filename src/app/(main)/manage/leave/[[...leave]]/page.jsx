@@ -216,11 +216,11 @@ const LeaveManagement = () => {
         <Sidebar />
         <div className="flex flex-col mx-auto justify-center text-center">
           <h1 className="mt-10 text-2xl font-medium">Leave application is pending approval</h1>
-          <div className="flex rounded-lg p-6 shadow-lg items-center">
+          <div className="mx-auto flex rounded-lg p-6 shadow-lg items-center">
             <UserTable columns={columns} data={leave.filter((item) => item.status !== "ACCEPT")} />
           </div>
           <h1 className="mt-12 mb-6 text-2xl font-medium">Leave application approved</h1>
-          <div className="flex rounded-lg p-6 shadow-lg items-center">
+          <div className="mx-auto flex rounded-lg p-6 shadow-lg items-center">
             <UserTable columns={columns} data={leave.filter((item) => item.status === "ACCEPT")} />
           </div>
         </div>
