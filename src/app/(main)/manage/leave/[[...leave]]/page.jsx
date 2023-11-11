@@ -80,6 +80,10 @@ const LeaveManagement = () => {
             color = "processing";
             icon = <SyncOutlined spin />;
             break;
+          case "REJECT":
+              color = "error";
+              icon = <ExclamationCircleOutlined />;
+              break;
           default:
             color = "error";
             icon = <ExclamationCircleOutlined />;
@@ -143,7 +147,7 @@ const LeaveManagement = () => {
                   }
                 }}
               >
-                Remove
+                Reject
               </button>
               {record.status !== "ACCEPT" && (
                 <button
