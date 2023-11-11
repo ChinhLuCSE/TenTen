@@ -1,15 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Header from "@/components/layout/header";
 import Image from "next/image";
 import Sidebar from "@/components/layout/sidebar";
 import UserImage from "@/assets/images/image_user.png";
 
-import { sendRequest } from "@/service/request";
+import { sendRequestWithToken } from "@/service/request";
 
 const UserInformation = () => {
+  const [user, setUser] = useState({});
   const [name, setName] = useState("Vo Cong Thanh");
   const [gender, setGender] = useState("Male");
   const [birthDate, setBirthDate] = useState("29/2/2002");
@@ -17,6 +18,32 @@ const UserInformation = () => {
   const [role, setRole] = useState("Admin");
 
   const [editable, setEditable] = useState(false);
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const token = document.cookie.split("=")[1];
+        console.log(token);
+        const response = await sendRequestWithToken(
+          "https://tenten-server.adaptable.app/account/info",
+          "GET",
+          null,
+          token
+        );
+
+        if (response) {
+          setUser(response);
+          console.log(response);
+        } else {
+          console.error("Failed to fetch user information");
+        }
+      } catch (error) {
+        console.error("Error while fetching user information:", error);
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
 
   const handleSubmit = async () => {
     const response = await sendRequest("https://tenten-server.adaptable.app/", "PUT", {
@@ -26,7 +53,7 @@ const UserInformation = () => {
       address,
       role,
     });
-  
+
     if (response.ok) {
       setEditable(!editable);
       console.log("success");
@@ -34,9 +61,15 @@ const UserInformation = () => {
       console.log("Error");
     }
   };
-  
+
   const handleEditable = () => {
     setEditable(!editable);
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const formattedDate = date.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" });
+    return formattedDate;
   };
 
   return (
@@ -46,15 +79,15 @@ const UserInformation = () => {
       <div className="flex flex-col items-center justify-center">
         <div className="flex w-full flex-col items-center p-2 mt-14">
           <Image className="rounded-full" src={UserImage} width={128} height={32} alt="avatar"></Image>
-          <span className="font-bold ">Vo Cong Thanh</span>
-          <span className="font-semibold text-gray-600">Human resources department</span>
-          <span className="text-gray-600">ID: 1234567890</span>
+          <span className="font-bold ">{user.name || "Loading..."}</span>
+          <span className="font-semibold text-gray-600">{user.department}</span>
+          <span className="text-gray-600">ID: {user.id}</span>
         </div>
         <div className="mt-6 items-center w-1/2 pt-6 pb-8 px-16 shadow-2xl rounded-md">
           <h1 className="text-2xl my-4 font-medium">Information</h1>
           <div className="pt-5">
             <form>
-            <div className="relative z-0 w-full mb-6 group border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600">
+              <div className="relative z-0 w-full mb-6 group border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600">
                 <label className="inline-block w-1/4 text-left text-gray-600">Full Name</label>
                 <input
                   type="text"
@@ -62,8 +95,8 @@ const UserInformation = () => {
                   name="name"
                   placeholder="Name"
                   className="flex-1 py-2 outline-none w-3/4 font-semibold text-gray-500"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  value={user.name || "Loading..."}
+                  onChange={(e) => setUser({ ...user, name: e.target.value })}
                   disabled={!editable}
                 />
               </div>
@@ -75,8 +108,8 @@ const UserInformation = () => {
                   name="gender"
                   placeholder="Enter your gender"
                   className="flex-1 py-2 outline-none w-3/4 font-semibold text-gray-500"
-                  value={gender}
-                  onChange={(e) => setGender(e.target.value)}
+                  value={user.gender || "Loading..."}
+                  onChange={(e) => setUser({ ...user, gender: e.target.value })}
                   disabled={!editable}
                 />
               </div>
@@ -88,8 +121,8 @@ const UserInformation = () => {
                   name="birthDate"
                   placeholder="Enter your birth date"
                   className="flex-1 py-2 outline-none w-3/4 font-semibold text-gray-500"
-                  value={birthDate}
-                  onChange={(e) => setBirthDate(e.target.value)}
+                  value={formatDate(user.birthday) || "Loading..."}
+                  onChange={(e) => setUser({ ...user, birthday: e.target.value })}
                   disabled={!editable}
                 />
               </div>
@@ -101,8 +134,8 @@ const UserInformation = () => {
                   name="address"
                   placeholder="Enter your address"
                   className="flex-1 py-2 outline-none w-3/4 font-semibold text-gray-500"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
+                  value={user.address || "Loading..."}
+                  onChange={(e) => setUser({ ...user, address: e.target.value })}
                   disabled={!editable}
                 />
               </div>
@@ -114,9 +147,8 @@ const UserInformation = () => {
                   name="role"
                   placeholder="Enter your role"
                   className="flex-1 py-2 outline-none w-3/4 font-semibold text-gray-500"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                  disabled={!editable}
+                  value={user.position || "Loading..."}
+                  disabled={true}
                 />
               </div>
 

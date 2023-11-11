@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import Header from "@/components/layout/header";
@@ -27,6 +27,7 @@ const SignInPage = () => {
   const [showWarning, setShowWarning] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -42,8 +43,8 @@ const SignInPage = () => {
         password: password,
       })
         .then((response) => {
-          console.log("aaaaa", response);
           document.cookie = `token=${response.access_token}`;
+          // const response1 = await sendRequestWithToken("https://tenten-server.adaptable.app/account/info", "GET")
           router.push("/user");
         })
         .catch((err) => console.log("Error: ", err));

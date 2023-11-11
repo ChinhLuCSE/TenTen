@@ -25,12 +25,12 @@ export function sendRequest(url, method = "GET", data = null) {
     });
 }
 
-export function sendRequestWithToken(url, method = "GET", data = null) {
+export function sendRequestWithToken(url, method = "GET", data = null, token1 = null) {
   const requestOptions = {
     method: method,
     headers: {
       "Content-Type": "application/json", // Set the appropriate content type
-      Authorization: `Bearer ${token}`, // Add the bearer token header
+      Authorization: `Bearer ${token1}`, // Add the bearer token header
     },
     body: data ? JSON.stringify(data) : null,
   };
