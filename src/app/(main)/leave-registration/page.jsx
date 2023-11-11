@@ -126,7 +126,7 @@ const LeaveRegistration = () => {
       );
       if (response1) {
         setLeaves(response1);
-        setIsModalOpen(false)
+        setIsModalOpen(false);
       }
       console.log("leave-submit", response);
     }
@@ -159,9 +159,9 @@ const LeaveRegistration = () => {
             icon = <SyncOutlined spin />;
             break;
           case "REJECT":
-              color = "error";
-              icon = <ExclamationCircleOutlined />;
-              break;
+            color = "error";
+            icon = <ExclamationCircleOutlined />;
+            break;
           default:
             color = "error";
             icon = <ExclamationCircleOutlined />;
@@ -200,22 +200,6 @@ const LeaveRegistration = () => {
       title: "Reason",
       dataIndex: "reason",
       key: "reason",
-    },
-    {
-      title: "Action",
-      key: "action",
-      render: (_, record) => (
-        <Space size="middle">
-          <button
-            type="button"
-            className="items-center text-white bg-red-700 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto px-3 py-1 inline-flex text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
-            onClick={handleRemoveRegistration}
-            disabled={record.status !== "PENDING"}
-          >
-            Remove
-          </button>
-        </Space>
-      ),
     },
   ];
 
