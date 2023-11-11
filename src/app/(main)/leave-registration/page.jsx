@@ -82,11 +82,12 @@ const LeaveRegistration = () => {
   }, []);
 
   const onChangeStartDate = (date, dateString) => {
-    setStartDate(dateString);
+    console.log("date:", date);
+    setStartDate(date);
   };
 
   const onChangeEndDate = (date, dateString) => {
-    setEndDate(dateString);
+    setEndDate(date);
   };
 
   const handleSubmit = async () => {
@@ -105,13 +106,25 @@ const LeaveRegistration = () => {
       "POST",
       {
         id: user.id,
-        startDate: startDate,
-        endDate: endDate,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
         reason: reason,
       },
       token
     );
-    if (response) console.log("leave-submit", response);
+    if (response) {
+      const response1 = await sendRequestWithToken(
+        `https://tenten-server.adaptable.app/request/getPersonal?id=${user.id}`,
+        "GET",
+        null,
+        token
+      );
+      if (response1) {
+        setLeaves(response1);
+        setIsModalOpen(false)
+      }
+      console.log("leave-submit", response);
+    }
   };
 
   const handleRemoveRegistration = () => {};
@@ -140,7 +153,7 @@ const LeaveRegistration = () => {
       dataIndex: "startDate",
       key: "startDate",
       render: (record) => {
-        console.log('record:', record)
+        console.log("record:", record);
         return formatDate(record);
       },
     },
