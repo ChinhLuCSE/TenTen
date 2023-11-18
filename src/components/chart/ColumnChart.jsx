@@ -63,7 +63,7 @@ function columnChart({ optionList, data, chartName, onOptionChange }) {
           ))}
         </select>
       </section>
-      <section className=" w-full min-h-[200px] flex flex-row gap-10 overflow-auto">
+      <section className=" w-full min-h-[280px] flex flex-row gap-10 overflow-auto">
         {renderedColumn}
       </section>
     </div>

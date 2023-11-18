@@ -118,7 +118,7 @@ function Statistics() {
       <Header status={1} />
       <div className="flex flex-row">
         <Sidebar />
-        <div className="flex flex-row flex-wrap p-4 mx-auto gap-10 min-w-[840px] w-10/12">
+        <div className="flex flex-row flex-wrap p-4 mx-auto mt-14 gap-10 min-w-[840px] w-10/12">
           <div className=" border rounded flex-1 min-w-[400px] p-8">
             <ColumnChart
               optionList={[
