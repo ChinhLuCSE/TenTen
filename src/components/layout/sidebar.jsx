@@ -107,7 +107,7 @@ const Sidebar = () => {
                 </li>
                 <li>
                   <a
-                    href="#"
+                    href="/manage/statistic"
                     className="flex items-center p-2 text-gray-500 font-semibold rounded-lg hover:text-white hover:bg-blue-900 group"
                   >
                     <Image src={Icon4} alt="My SVG" width={24} height={24} />
