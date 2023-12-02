@@ -93,6 +93,7 @@ const LeaveManagement = () => {
     },
     {
       title: "Action",
+      dataIndex: "action",
       key: "action",
       render: (_, record) => (
         <>
@@ -224,7 +225,7 @@ const LeaveManagement = () => {
           </div>
           <h1 className="mt-12 mb-6 text-2xl font-medium">Leave application approved</h1>
           <div className="mx-auto flex rounded-lg p-6 shadow-lg items-center">
-            <UserTable columns={columns} data={leave.filter((item) => item.status === "ACCEPT")} />
+            <UserTable columns={columns.filter((column) => column.dataIndex !== "action")} data={leave.filter((item) => item.status === "ACCEPT")} />
           </div>
         </div>
       </div>
