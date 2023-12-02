@@ -82,6 +82,7 @@ const UserInformation = () => {
   };
 
   const handleEditable = () => {
+    setUser(originalUser);
     setEditable(!editable);
   };
 
@@ -117,9 +118,10 @@ const UserInformation = () => {
                   name="name"
                   placeholder="Name"
                   className="flex-1 py-2 outline-none w-3/4 font-semibold text-gray-500"
-                  value={user.name || "Loading..."}
+                  value={JSON.stringify(user) !== '{}' ? user.name : "Loading..."}
                   onChange={(e) => setUser({ ...user, name: e.target.value })}
                   disabled={!editable}
+                  required
                 />
               </div>
               <div className="relative z-0 w-full mb-6 group border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600">
@@ -130,9 +132,10 @@ const UserInformation = () => {
                   name="gender"
                   placeholder="Enter your gender"
                   className="flex-1 py-2 outline-none w-3/4 font-semibold text-gray-500"
-                  value={user.gender || "Loading..."}
+                  value={JSON.stringify(user) !== '{}' ? user.gender : "Loading..."}
                   onChange={(e) => setUser({ ...user, gender: e.target.value })}
                   disabled={!editable}
+                  required
                 />
               </div>
               <div className="relative z-0 w-full mb-6 group border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600">
@@ -146,6 +149,7 @@ const UserInformation = () => {
                   value={formatDate(user.birthday)}
                   onChange={(e) => setUser({ ...user, birthday: e.target.value })}
                   disabled={!editable}
+                  required
                 />
               </div>
               <div className="relative z-0 w-full mb-6 group border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600">
@@ -156,9 +160,10 @@ const UserInformation = () => {
                   name="address"
                   placeholder="Enter your address"
                   className="flex-1 py-2 outline-none w-3/4 font-semibold text-gray-500"
-                  value={user.address || "Loading..."}
+                  value={JSON.stringify(user) !== '{}' ? user.address : "Loading..."}
                   onChange={(e) => setUser({ ...user, address: e.target.value })}
                   disabled={!editable}
+                  required
                 />
               </div>
               <div className="relative z-0 w-full mb-6 group border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600">
