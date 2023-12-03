@@ -69,7 +69,6 @@ const LeaveRegistration = () => {
 
             if (response1) {
               setLeaves(response1);
-              console.log(response1);
             } else {
               console.error("Failed to fetch leaves data");
             }
@@ -108,6 +107,7 @@ const LeaveRegistration = () => {
       .split("=")[1];
     const response = await sendRequestWithToken(
       "https://tenten-server.adaptable.app/request/create",
+      // "http://localhost:3000/request/create",
       "POST",
       {
         id: user.id,
@@ -184,7 +184,6 @@ const LeaveRegistration = () => {
       dataIndex: "startDate",
       key: "startDate",
       render: (record) => {
-        console.log("record:", record);
         return formatDate(record);
       },
     },
@@ -221,7 +220,7 @@ const LeaveRegistration = () => {
 
   return (
     <div className="leave-regis-container">
-      <Header status={1} />
+      <Header status={1}/>
       <Sidebar />
       <div
         style={{

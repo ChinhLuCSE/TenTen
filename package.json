@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 8080",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -22,6 +22,8 @@
     "next": "14.0.1",
     "react": "^18",
     "react-dom": "^18",
+    "sass": "^1.69.5",
+    "socket.io-client": "^4.7.2",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.6",
     "tailwind-merge": "^2.0.0",

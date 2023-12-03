@@ -113,7 +113,6 @@ const EmployeeManagement = () => {
         );
 
         if (response) {
-          console.log(response);
           setEmployee(response);
         } else {
           console.log("Failed to fetch information");
@@ -211,7 +210,7 @@ const EmployeeManagement = () => {
 
   return (
     <div className="PI-container">
-      <Header status={1}></Header>
+      <Header status={1} > </Header>
       <div className="flex flex-row">
         <Sidebar />
         <div className="flex mt-14 mx-auto rounded-lg p-6 shadow-lg items-center">

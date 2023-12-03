@@ -6,7 +6,6 @@ import Header from "@/components/layout/header";
 import Image from "next/image";
 import Sidebar from "@/components/layout/sidebar";
 import UserImage from "@/assets/images/image_user.png";
-
 import { sendRequestWithToken } from "@/service/request";
 
 const UserInformation = () => {
@@ -93,10 +92,9 @@ const UserInformation = () => {
     const date = new Date(dateString);
     return date.toISOString().split("T")[0];
   };
-
   return (
     <div className="PI-container">
-      <Header status={1}></Header>
+      <Header status={1} ></Header>
       <Sidebar />
       <div className="flex flex-col items-center justify-center">
         <div className="flex w-full flex-col items-center p-2 mt-14">
