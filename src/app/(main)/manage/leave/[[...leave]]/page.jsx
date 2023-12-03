@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  CheckCircleOutlined,
-  ExclamationCircleOutlined,
-  SyncOutlined,
-} from "@ant-design/icons";
+import { CheckCircleOutlined, ExclamationCircleOutlined, SyncOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 
 import Header from "@/components/layout/header";
@@ -14,10 +10,11 @@ import Image from "next/image";
 
 import { sendRequestWithToken } from "@/service/request";
 
-import { Space, Modal, Tag } from "antd";
-
+import { Space, Modal, Tag, message } from "antd";
 
 const LeaveManagement = () => {
+  const [messageApi, contextHolder] = message.useMessage();
+
   const columns = [
     {
       title: "#",
@@ -43,9 +40,9 @@ const LeaveManagement = () => {
             icon = <SyncOutlined spin />;
             break;
           case "REJECT":
-              color = "error";
-              icon = <ExclamationCircleOutlined />;
-              break;
+            color = "error";
+            icon = <ExclamationCircleOutlined />;
+            break;
           default:
             color = "error";
             icon = <ExclamationCircleOutlined />;
@@ -93,6 +90,7 @@ const LeaveManagement = () => {
     },
     {
       title: "Action",
+      dataIndex: "action",
       key: "action",
       render: (_, record) => (
         <>
@@ -135,11 +133,11 @@ const LeaveManagement = () => {
     const fetchLeave = async () => {
       try {
         const token = document.cookie
-        ? document.cookie
-            .split("; ")
-            .find((row) => row.startsWith("token="))
-            .split("=")[1]
-        : "none";
+          ? document.cookie
+              .split("; ")
+              .find((row) => row.startsWith("token="))
+              .split("=")[1]
+          : "none";
         console.log(token);
         // const url = 'http://localhost:3000/request/getAllRequest' // Sang
         const response = await sendRequestWithToken(
@@ -191,18 +189,24 @@ const LeaveManagement = () => {
 
     if (response) {
       const updatedLeave = leave.map((item) =>
-      item.id === selectedLeave.id
-        ? { ...item, status: selectedLeave.status }
-        : item
-    );
-    setLeave(updatedLeave);
+        item.id === selectedLeave.id ? { ...item, status: selectedLeave.status } : item
+      );
+      setLeave(updatedLeave);
       setIsModalOpen(false);
-      console.log("success");
+      messageApi.open({
+        type: "success",
+        content: "Update successfully",
+        duration: 3,
+      });
     } else {
-      console.log("Error");
+      messageApi.open({
+        type: "error",
+        content: "Error",
+        duration: 3,
+      });
     }
   };
-  
+
   const formatDate = (dateString) => {
     if (!dateString) {
       return "Loading...";
@@ -213,21 +217,28 @@ const LeaveManagement = () => {
   };
 
   return (
-    <div>
-      <Header status={1} ></Header>
+    <div className="leaveManagement">
+      {contextHolder}
+      <Header status={1}></Header>
       <div className="flex flex-row">
         <Sidebar />
         <div className="flex flex-col mx-auto justify-center text-center">
           <h1 className="mt-10 text-2xl font-medium">Leave application is pending approval</h1>
           <div className="mx-auto flex rounded-lg p-6 shadow-lg items-center">
-            <UserTable columns={columns} data={[
+            <UserTable
+              columns={columns}
+              data={[
                 ...leave.filter((item) => item.status === "PENDING"),
                 ...leave.filter((item) => item.status === "REJECT"),
-              ]} />
+              ]}
+            />
           </div>
           <h1 className="mt-12 mb-6 text-2xl font-medium">Leave application approved</h1>
           <div className="mx-auto flex rounded-lg p-6 shadow-lg items-center">
-            <UserTable columns={columns} data={leave.filter((item) => item.status === "ACCEPT")} />
+            <UserTable
+              columns={columns.filter((column) => column.dataIndex !== "action")}
+              data={leave.filter((item) => item.status === "ACCEPT")}
+            />
           </div>
         </div>
       </div>
