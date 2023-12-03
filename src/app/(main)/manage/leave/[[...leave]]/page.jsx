@@ -138,17 +138,15 @@ const LeaveManagement = () => {
               .find((row) => row.startsWith("token="))
               .split("=")[1]
           : "none";
-        console.log(token);
-        // const url = 'http://localhost:3000/request/getAllRequest' // Sang
         const response = await sendRequestWithToken(
           "https://tenten-server.adaptable.app/request/getAllRequest",
-          // url, // Sang
           "GET",
           null,
           token
         );
 
         if (response) {
+          console.log(response);
           setLeave(response);
         } else {
           console.log("Failed to fetch information");
@@ -173,21 +171,19 @@ const LeaveManagement = () => {
 
   const handleConfirm = async () => {
     const token = document.cookie
-        ? document.cookie
-            .split("; ")
-            .find((row) => row.startsWith("token="))
-            .split("=")[1]
-        : "none";
-        const url = 'http://localhost:3000/request/update-status'
+      ? document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("token="))
+          .split("=")[1]
+      : "none";
     const response = await sendRequestWithToken(
-      // "https://tenten-server.adaptable.app/request/update-status",
-      url,
+      "https://tenten-server.adaptable.app/request/update-status",
       "POST",
       selectedLeave,
       token
     );
 
-    if (response) {
+    if (response.message === "SUCCESS") {
       const updatedLeave = leave.map((item) =>
         item.id === selectedLeave.id ? { ...item, status: selectedLeave.status } : item
       );
