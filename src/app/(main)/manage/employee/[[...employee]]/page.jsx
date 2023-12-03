@@ -10,9 +10,14 @@ import { sendRequest, sendRequestWithToken } from "@/service/request";
 
 import UserImage from "@/assets/images/image_user.png";
 
-import { Space, Modal, Spin } from "antd";
+import { Space, Modal, Spin, message, Typography } from "antd";
+import { LoadingOutlined, SendOutlined } from '@ant-design/icons';
+
+const { Text } = Typography;
 
 const EmployeeManagement = () => {
+  const [messageApi, contextHolder] = message.useMessage();
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const formattedDate = date.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" });
@@ -95,6 +100,8 @@ const EmployeeManagement = () => {
   const [employee, setEmployee] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
+  const [warning, setWarning] = useState("false");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchEmployee = async () => {
@@ -113,7 +120,6 @@ const EmployeeManagement = () => {
         );
 
         if (response) {
-          console.log(response);
           setEmployee(response);
         } else {
           console.log("Failed to fetch information");
@@ -133,6 +139,8 @@ const EmployeeManagement = () => {
   };
 
   const handleCancel = () => {
+    setLoading(false);
+    setWarning("false");
     setIsModalOpen(false);
   };
 
@@ -152,20 +160,26 @@ const EmployeeManagement = () => {
           .find((row) => row.startsWith("token="))
           .split("=")[1]
       : "none";
-      const modifiedFields = {id: selectedEmployee.id};
+    if (!selectedEmployee.name || !selectedEmployee.gender || !selectedEmployee.birthday || !selectedEmployee.address) {
+        setWarning("true");
+    } else {
+    setLoading(true);
+    setWarning("false");
 
-      if (selectedEmployee.name !== originSelectedEmployee.name) {
-        modifiedFields.name = selectedEmployee.name;
-      }
-      if (selectedEmployee.gender !== originSelectedEmployee.gender) {
-        modifiedFields.gender = selectedEmployee.gender;
-      }
-      if (selectedEmployee.birthday !== originSelectedEmployee.birthday) {
-        modifiedFields.birthday = selectedEmployee.birthday;
-      }
-      if (selectedEmployee.address !== originSelectedEmployee.address) {
-        modifiedFields.address = selectedEmployee.address;
-      }
+    const modifiedFields = { id: selectedEmployee.id };
+
+    if (selectedEmployee.name !== originSelectedEmployee.name) {
+      modifiedFields.name = selectedEmployee.name;
+    }
+    if (selectedEmployee.gender !== originSelectedEmployee.gender) {
+      modifiedFields.gender = selectedEmployee.gender;
+    }
+    if (selectedEmployee.birthday !== originSelectedEmployee.birthday) {
+      modifiedFields.birthday = selectedEmployee.birthday;
+    }
+    if (selectedEmployee.address !== originSelectedEmployee.address) {
+      modifiedFields.address = selectedEmployee.address;
+    }
     const response = await sendRequestWithToken(
       "https://tenten-server.adaptable.app/staffs/update",
       "POST",
@@ -176,12 +190,23 @@ const EmployeeManagement = () => {
       const updatedEmployee = employee.map((item) =>
         item.id === selectedEmployee.id ? { ...item, ...modifiedFields } : item
       );
+      setLoading(false);
       setEmployee(updatedEmployee);
       setIsModalOpen(false);
-      console.log("success");
+      messageApi.open({
+        type: "success",
+        content: "Update successfully",
+        duration: 3,
+      });
     } else {
-      console.log("Error");
+      setLoading(false);
+      messageApi.open({
+        type: "error",
+        content: "Error",
+        duration: 3,
+      });
     }
+  }
   };
 
   const handleDelete = async () => {
@@ -191,7 +216,7 @@ const EmployeeManagement = () => {
           .find((row) => row.startsWith("token="))
           .split("=")[1]
       : "none";
-    const data = {id: selectedEmployee.id}
+    const data = { id: selectedEmployee.id };
     const response = await sendRequestWithToken(
       `https://tenten-server.adaptable.app/staffs/delete-staff`,
       "POST",
@@ -200,17 +225,26 @@ const EmployeeManagement = () => {
     );
 
     if (response) {
-      const updatedEmployee = employee.filter((item) => item.id !== selectedEmployee.id)
+      const updatedEmployee = employee.filter((item) => item.id !== selectedEmployee.id);
       setEmployee(updatedEmployee);
       setIsRemoveModalOpen(false);
-      console.log("success");
+      messageApi.open({
+        type: "success",
+        content: "Success",
+        duration: 3,
+      });
     } else {
-      console.log("Error");
+      messageApi.open({
+        type: "error",
+        content: "Error",
+        duration: 3,
+      });
     }
   };
 
   return (
     <div className="PI-container">
+      {contextHolder}
       <Header status={1}></Header>
       <div className="flex flex-row">
         <Sidebar />
@@ -278,7 +312,7 @@ const EmployeeManagement = () => {
                     onChange={(e) => setSelectedEmployee({ ...selectedEmployee, address: e.target.value })}
                   />
                 </div>
-                <div className="relative z-0 w-full mb-6 group border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600">
+                <div className="relative z-0 w-full mb-3 group border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600">
                   <label className="inline-block w-1/4 text-left text-gray-600">Role</label>
                   <input
                     type="text"
@@ -290,6 +324,9 @@ const EmployeeManagement = () => {
                     disabled={true}
                   />
                 </div>
+                <div className="flex flex-row mb-3 items-center justify-left">
+                {warning === "true" ?  <Text type="danger">Some fields are empty, please fill them in</Text> : ""}
+              </div> 
                 <div className="flex flex-row items-center justify-center">
                   <button
                     type="button"
@@ -304,7 +341,7 @@ const EmployeeManagement = () => {
                     className="mx-2 items-center text-white bg-blue-900 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 pt-3 pb-2.5 inline-flex text-center "
                     onClick={handleSubmit}
                   >
-                    <Image className="mr-2" src="/submit.svg" width={20} height={20} alt="Logo" />
+                    {loading ? <LoadingOutlined style={{ fontSize: '24px', color: 'white', marginRight: '8px' }} spin /> : <SendOutlined style={{ fontSize: '24px', color: 'white', marginRight: '8px' }} />}
                     Submit
                   </button>
                 </div>

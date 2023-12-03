@@ -69,7 +69,6 @@ const LeaveRegistration = () => {
 
             if (response1) {
               setLeaves(response1);
-              console.log(response1);
             } else {
               console.error("Failed to fetch leaves data");
             }
@@ -108,6 +107,7 @@ const LeaveRegistration = () => {
       .split("=")[1];
     const response = await sendRequestWithToken(
       "https://tenten-server.adaptable.app/request/create",
+      // "http://localhost:3000/request/create",
       "POST",
       {
         id: user.id,
@@ -184,7 +184,6 @@ const LeaveRegistration = () => {
       dataIndex: "startDate",
       key: "startDate",
       render: (record) => {
-        console.log("record:", record);
         return formatDate(record);
       },
     },
@@ -208,8 +207,10 @@ const LeaveRegistration = () => {
         <Space size="middle">
           <button
             type="button"
-            className="items-center text-white bg-red-700 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto px-3 py-1 inline-flex text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
-            onClick={handleRemoveRegistration}
+            className={record.status === "PENDING" ? "items-center text-white bg-red-700 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto px-3 py-1 inline-flex text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" : "items-center text-white bg-gray-700 font-medium rounded-lg text-sm w-full sm:w-auto px-3 py-1 inline-flex text-center"}
+            onClick={() => {
+              console.log('record:', record)
+              return handleRemoveRegistration}}
             disabled={record.status !== "PENDING"}
           >
             Remove
@@ -221,7 +222,7 @@ const LeaveRegistration = () => {
 
   return (
     <div className="leave-regis-container">
-      <Header status={1} />
+      <Header status={1}/>
       <Sidebar />
       <div
         style={{
@@ -268,7 +269,7 @@ const LeaveRegistration = () => {
           >
             <div className={styles["input-title"]}>Remaining days off</div>
             <div style={{ color: "#6F737D", paddingLeft: "20px" }}>
-              {user.numLeaveDays || "Loading..."}
+              {user.numLeaveDays === 0 ? "0" : "Loading..."}
             </div>
           </div>
           <div className={styles["input-wrap"]}>
