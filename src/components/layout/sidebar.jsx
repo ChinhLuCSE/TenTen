@@ -7,7 +7,7 @@ import Icon3 from "@/assets/icons/icon3.svg";
 import Icon4 from "@/assets/icons/icon4.svg";
 import Icon5 from "@/assets/icons/icon5.svg";
 import UserImage from "@/assets/images/image_user.png";
-
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { sendRequestWithToken } from "@/service/request";
@@ -22,6 +22,7 @@ const Sidebar = () => {
       .split("; ")
       .find((row) => row.startsWith("token="))
       .split("=")[1];
+
     const fetchUserInfo = async () => {
       try {
         const response = await sendRequestWithToken(
@@ -44,6 +45,10 @@ const Sidebar = () => {
 
     fetchUserInfo();
   }, []);
+  const handleLogout = async () => {
+    document.cookie = `token=`;
+    setUser({});
+  };
   return (
     <div className="w-64">
       <aside
@@ -60,7 +65,10 @@ const Sidebar = () => {
               height={32}
               alt="avatar"
             ></Image>
-            <span className="font-bold ">{user.name}</span>
+            <span className="font-bold" >{user.name}</span>
+            <Link href="/sign-in" onClick={handleLogout}> Đăng xuất
+            </Link>
+            {/* <button className="font-bold" style={{ borderStyle: 'groove' }} onClick={() => handleLogout()}>Đăng xuất</button> */}
           </div>
           <ul className="space-y-2 font-medium">
             {user.role === "ADMIN" && (
