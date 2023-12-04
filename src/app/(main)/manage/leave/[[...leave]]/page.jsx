@@ -171,13 +171,15 @@ const LeaveManagement = () => {
 
   const handleConfirm = async () => {
     const token = document.cookie
-      ? document.cookie
-          .split("; ")
-          .find((row) => row.startsWith("token="))
-          .split("=")[1]
-      : "none";
+        ? document.cookie
+            .split("; ")
+            .find((row) => row.startsWith("token="))
+            .split("=")[1]
+        : "none";
+        // const url = 'http://localhost:3000/request/update-status'
     const response = await sendRequestWithToken(
       "https://tenten-server.adaptable.app/request/update-status",
+      // url,
       "POST",
       selectedLeave,
       token
