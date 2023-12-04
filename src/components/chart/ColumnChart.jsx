@@ -1,5 +1,4 @@
 function columnChart({ optionList, data, chartName, onOptionChange }) {
-  console.log(data);
   const maxCount =
     (Array.isArray(data) &&
       data.toSorted((a, b) => b.count - a.count)[0]?.count) ??

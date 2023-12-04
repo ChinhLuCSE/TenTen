@@ -105,13 +105,25 @@ function Statistics() {
       color: "danger",
     },
   ];
-  //   console.log(formatedStatus);
 
-  const formatedStaff = statisticStaff.reduce((prevArr, item) => [...prevArr, {
-    label: `${item.name !== "" ? `${item.name}` : ''} ${item.id ? `id: ${item.id}` : ""}`,
-    count: item.dayoff,
-    color: item.dayoff <= 12*statisticOption.staff ? "staff" : 'danger'
-  }], []);
+  const formatedStaff = statisticStaff.reduce(
+    (prevArr, item) => [
+      ...prevArr,
+      {
+        label: `${item.name !== "" ? `${item.name}` : ""} ${
+          item.id ? `id: ${item.id}` : ""
+        }`,
+        count: item.dayoff,
+        color:
+          item.dayoff <= 12 * statisticOption.staff
+            ? "staff"
+            : item.dayoff > 12 * statisticOption.staff
+            ? "danger"
+            : "warning",
+      },
+    ],
+    []
+  );
 
   return (
     <>
@@ -155,7 +167,7 @@ function Statistics() {
                 },
               ]}
               data={formatedStaff}
-              chartName="Number of Application"
+              chartName="Number of Days Off"
               onOptionChange={(newData) => {
                 setStatisticOption((prevOption) => ({
                   ...prevOption,
