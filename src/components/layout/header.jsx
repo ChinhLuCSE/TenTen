@@ -6,62 +6,65 @@ import './card.scss';
 import io from 'socket.io-client';
 import { sendRequestWithToken } from "@/service/request";
 
-const Header = ({ status}) => {
+const Header = ({ status }) => {
   const [user, setUser] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [dataNotif, setDataNotif] = useState([]);
   const [numNotif, setNumNotif] = useState(0);
   useEffect(() => {
-    if(status == 1) {
+    if (status == 1) {
       const token = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("token="))
-      .split("=")[1];
-    const fetchUserInfo = async (done) => {
-      try {
-        const response = await sendRequestWithToken(
-          "https://tenten-server.adaptable.app/account/info",
-          // "http://localhost:3000/account/info", // Sang
-          "GET",
-          null,
-          token
-        );
+        .split("; ")
+        .find((row) => row.startsWith("token="))
+        .split("=")[1];
+      const fetchUserInfo = async (done) => {
+        try {
+          const response = await sendRequestWithToken(
+            "https://tenten-server.adaptable.app/account/info",
+            // "http://localhost:3000/account/info", // Sang
+            "GET",
+            null,
+            token
+          );
 
-        if (response) {
-          setUser(response);
-          done(response);
-        } else {
-          console.error("Failed to fetch user information");
+          if (response) {
+            setUser(response);
+            done(response);
+          } else {
+            console.error("Failed to fetch user information");
+          }
+        } catch (error) {
+          console.error("Error while fetching user information:", error);
         }
-      } catch (error) {
-        console.error("Error while fetching user information:", error);
-      }
-    };
-
-    fetchUserInfo((user) => {
-      const socket = io('https://tenten-server.adaptable.app:4000');
-      socket.on('init', ({data})=> {
-        setDataNotif(data.sort((a,b) => (new Date(b.time).getTime() - new Date(a.time).getTime())));
-        setNumNotif(data.filter(i=> i.status == '0').length);
-      });
-      socket.on('create', ({data}) => {
-        if(user && user.role == 'ADMIN') {
-          setDataNotif(data.filter(i => i.title == 'A new leave request').sort((a,b) => (new Date(b.time).getTime() - new Date(a.time).getTime())));
-          setNumNotif(data.filter(i=>i.title == 'A new leave request' && i.status == '0').length);
-
-        }
-      });
-      socket.on('handle', ({data}) => {
-        if(user && user.role != 'ADMIN' && user.id == data.userId) {
-          const list = data.list.filter( i => i.staffId == user.id && i.title != 'A new leave request')
-          setDataNotif(list.sort((a,b) => (new Date(b.time).getTime() - new Date(a.time).getTime())));
-          setNumNotif(list.filter(i => i.status == '0').length);
-        }
-      })
-      return () => {
-        socket.disconnect();
       };
-    });
+
+      fetchUserInfo((user) => {
+        // console.log('heeee');
+        const socket = io('https://tenten-server.adaptable.app:4000');
+        // const socket = io('http://localhost:3000');
+
+        socket.on('init', ({ data }) => {
+          setDataNotif(data.sort((a, b) => (new Date(b.time).getTime() - new Date(a.time).getTime())));
+          setNumNotif(data.filter(i => i.status == '0').length);
+        });
+        socket.on('create', ({ data }) => {
+          if (user && user.role == 'ADMIN') {
+            setDataNotif(data.filter(i => i.title == 'A new leave request').sort((a, b) => (new Date(b.time).getTime() - new Date(a.time).getTime())));
+            setNumNotif(data.filter(i => i.title == 'A new leave request' && i.status == '0').length);
+
+          }
+        });
+        socket.on('handle', ({ data }) => {
+          if (user && user.role != 'ADMIN' && user.id == data.userId) {
+            const list = data.list.filter(i => i.staffId == user.id && i.title != 'A new leave request')
+            setDataNotif(list.sort((a, b) => (new Date(b.time).getTime() - new Date(a.time).getTime())));
+            setNumNotif(list.filter(i => i.status == '0').length);
+          }
+        })
+        return () => {
+          socket.disconnect();
+        };
+      });
     }
   }, []);
 
@@ -69,25 +72,25 @@ const Header = ({ status}) => {
     const updateStatusNotif = async (list) => {
       try {
         const token = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("token="))
-      .split("=")[1];
-    const response = await sendRequestWithToken(
-      "https://tenten-server.adaptable.app/notification/updateStatus",
-      // "http://localhost:3000/notification/updateStatus", // Sang
-      "POST",
-      {
-        list
-      },
-      token
-    );
+          .split("; ")
+          .find((row) => row.startsWith("token="))
+          .split("=")[1];
+        const response = await sendRequestWithToken(
+          "https://tenten-server.adaptable.app/notification/updateStatus",
+          // "http://localhost:3000/notification/updateStatus", // Sang
+          "POST",
+          {
+            list
+          },
+          token
+        );
 
 
       } catch (error) {
         console.error("Error while fetching user information:", error);
       }
     };
-    if(dataNotif.filter(i => i.status == '0').length){
+    if (dataNotif.filter(i => i.status == '0').length) {
       updateStatusNotif(dataNotif);
     };
     setNumNotif(0);
@@ -98,12 +101,12 @@ const Header = ({ status}) => {
     setIsModalVisible(false);
   };
   const check = (title) => {
-    if(title.includes('new')){
+    if (title.includes('new')) {
       return 'new';
-    }else if(title.includes('reject')){
+    } else if (title.includes('reject')) {
       return 'reject';
-    }else return 'approve'
-  } 
+    } else return 'approve'
+  }
   return (
 
     <div className="header-container sticky top-0 z-30 w-full p-5 bg-white sm:px-7 shadow-lg">
@@ -145,12 +148,12 @@ const Header = ({ status}) => {
                             {
                               dataNotif.map(i => {
                                 let title = '', icon = '', titleIcon = '', icon2 = '';
-                                if(check(i.title)=='approve'){
-                                  title ='tip-box-success';
+                                if (check(i.title) == 'approve') {
+                                  title = 'tip-box-success';
                                   icon = "info-tab tip-icon-alert";
                                   titleIcon = 'success';
                                   icon2 = 'new-message-box-success';
-                                } else if(check(i.title)=='reject') {
+                                } else if (check(i.title) == 'reject') {
                                   title = 'tip-box-danger';
                                   icon = "info-tab tip-icon-danger";
                                   titleIcon = 'error';
@@ -162,20 +165,20 @@ const Header = ({ status}) => {
                                   icon2 = 'new-message-box-alert';
                                 };
                                 return <>
-                            <div class="row">
-                              <div class="col-xs-12 col-sm-6 col-sm-offset-3">
-                                
-                                <div class="new-message-box">
-                                <div class={icon2}>
+                                  <div class="row">
+                                    <div class="col-xs-12 col-sm-6 col-sm-offset-3">
 
-                                    <div class={icon} title={titleIcon}><i></i></div>
-                                    <div class={title}>
-                                      <p><strong>{i.title}:</strong> {i.content} .{i.status == '0'?<strong style={{color: 'green'}}>(new)</strong>:''}</p>
+                                      <div class="new-message-box">
+                                        <div class={icon2}>
+
+                                          <div class={icon} title={titleIcon}><i></i></div>
+                                          <div class={title}>
+                                            <p><strong>{i.title}:</strong> {i.content} .{i.status == '0' ? <strong style={{ color: 'green' }}>(new)</strong> : ''}</p>
+                                          </div>
+                                        </div>
+                                      </div>
                                     </div>
-                                </div>
-                                </div>
-                              </div>
-                            </div>
+                                  </div>
                                 </>
                               })
                             }
