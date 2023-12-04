@@ -216,15 +216,14 @@ const EmployeeManagement = () => {
           .find((row) => row.startsWith("token="))
           .split("=")[1]
       : "none";
-    const data = { id: selectedEmployee.id };
+
     const response = await sendRequestWithToken(
-      `https://tenten-server.adaptable.app/staffs/delete-staff`,
+      `https://tenten-server.adaptable.app/staffs/delete-staff?id=${selectedEmployee.id}`,
       "POST",
-      data,
+      null,
       token
     );
-
-    if (response) {
+    if (response.message === "SUCCESS") {
       const updatedEmployee = employee.filter((item) => item.id !== selectedEmployee.id);
       setEmployee(updatedEmployee);
       setIsRemoveModalOpen(false);
@@ -234,6 +233,7 @@ const EmployeeManagement = () => {
         duration: 3,
       });
     } else {
+      console.log(response);
       messageApi.open({
         type: "error",
         content: "Error",

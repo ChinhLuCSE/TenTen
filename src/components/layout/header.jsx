@@ -12,7 +12,8 @@ const Header = ({ status}) => {
   const [dataNotif, setDataNotif] = useState([]);
   const [numNotif, setNumNotif] = useState(0);
   useEffect(() => {
-    const token = document.cookie
+    if(status == 1) {
+      const token = document.cookie
       .split("; ")
       .find((row) => row.startsWith("token="))
       .split("=")[1];
@@ -38,7 +39,7 @@ const Header = ({ status}) => {
     };
 
     fetchUserInfo((user) => {
-      const socket = io('http://localhost:4000');
+      const socket = io('https://tenten-server.adaptable.app:4000');
       socket.on('init', ({data})=> {
         setDataNotif(data.sort((a,b) => (new Date(b.time).getTime() - new Date(a.time).getTime())));
         setNumNotif(data.filter(i=> i.status == '0').length);
@@ -61,6 +62,7 @@ const Header = ({ status}) => {
         socket.disconnect();
       };
     });
+    }
   }, []);
 
   const handleNotifClick = () => {
