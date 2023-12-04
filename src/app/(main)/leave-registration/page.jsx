@@ -269,7 +269,7 @@ const LeaveRegistration = () => {
           >
             <div className={styles["input-title"]}>Remaining days off</div>
             <div style={{ color: "#6F737D", paddingLeft: "20px" }}>
-              {user.numLeaveDays === 0 ? "0" : "Loading..."}
+              {user.numLeaveDays === 0 ? "0" : user.numLeaveDays}
             </div>
           </div>
           <div className={styles["input-wrap"]}>
