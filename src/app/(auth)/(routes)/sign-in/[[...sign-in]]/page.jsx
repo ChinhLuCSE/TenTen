@@ -154,7 +154,9 @@ const SignInPage = () => {
                 Login
               </button>
               <div style={{ color: "red", textAlign: "center" }}>
-                {showWarning ? "Account does not exist! Please re-enter!" : ""}
+              {showWarning ? 
+                  (policyAccepted1 ? "Account does not exist! Please re-enter!" : "Please agree to our terms of service and privacy policy!") 
+              : ""}
               </div>
               <div
                 style={{
