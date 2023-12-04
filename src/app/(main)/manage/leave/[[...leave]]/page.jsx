@@ -1,5 +1,6 @@
 "use client";
 
+import { CheckCircleOutlined, ExclamationCircleOutlined, SyncOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 
 import Header from "@/components/layout/header";
@@ -7,50 +8,13 @@ import Sidebar from "@/components/layout/sidebar";
 import UserTable from "@/components/table/usertable";
 import Image from "next/image";
 
-import { sendRequest, sendRequestWithToken } from "@/service/request";
+import { sendRequestWithToken } from "@/service/request";
 
-import { Space, Modal } from "antd";
-
-const data = [
-  {
-    id: "SS 2313da212321",
-    status: "Approved",
-    name: "Vo Cong Thanh",
-    remaining_day: "10",
-    start_date: "23/02/2000",
-    end_date: "23/02/2000",
-    reason: "toi benh",
-  },
-  {
-    id: "SS 23132a1d2321",
-    status: "Approved",
-    name: "Vo Cong Thanh",
-    remaining_day: "10",
-    start_date: "23/02/2000",
-    end_date: "23/02/2000",
-    reason: "toi benh",
-  },
-  {
-    id: "SS 231321d2321",
-    status: "Pending",
-    name: "Vo Cong Thanh",
-    remaining_day: "10",
-    start_date: "23/02/2000",
-    end_date: "23/02/2000",
-    reason: "toi benh",
-  },
-  {
-    id: "SS 23d13212321",
-    status: "Canceled",
-    name: "Vo Cong Thanh",
-    remaining_day: "10",
-    start_date: "23/02/2000",
-    end_date: "23/02/2000",
-    reason: "toi benh",
-  },
-];
+import { Space, Modal, Tag, message } from "antd";
 
 const LeaveManagement = () => {
+  const [messageApi, contextHolder] = message.useMessage();
+
   const columns = [
     {
       title: "#",
@@ -64,6 +28,32 @@ const LeaveManagement = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      render: (value, record) => {
+        let color, icon;
+        switch (value) {
+          case "ACCEPT":
+            color = "success";
+            icon = <CheckCircleOutlined />;
+            break;
+          case "PENDING":
+            color = "processing";
+            icon = <SyncOutlined spin />;
+            break;
+          case "REJECT":
+            color = "error";
+            icon = <ExclamationCircleOutlined />;
+            break;
+          default:
+            color = "error";
+            icon = <ExclamationCircleOutlined />;
+            break;
+        }
+        return (
+          <Tag icon={icon} color={color}>
+            {value ? value : "NO STATUS"}
+          </Tag>
+        );
+      },
     },
     {
       title: "Full name",
@@ -72,8 +62,8 @@ const LeaveManagement = () => {
     },
     {
       title: "Remaining days off",
-      dataIndex: "remaining_day",
-      key: "remaining_day",
+      dataIndex: "numLeaveDays",
+      key: "numLeaveDays",
     },
     {
       title: "Start date",
@@ -100,24 +90,12 @@ const LeaveManagement = () => {
     },
     {
       title: "Action",
+      dataIndex: "action",
       key: "action",
       render: (_, record) => (
         <>
-          {record.status !== "CANCELED" && (
+          {record.status !== "REJECT" && (
             <Space size="middle">
-              <button
-                type="button"
-                className="items-center text-white bg-red-700 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto px-3 py-1 inline-flex text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
-                onClick={() => {
-                  if (record.status === "ACCEPT") {
-                    showModal({ id: record.id, status: "PENDING" });
-                  } else if (record.status === "PENDING") {
-                    showModal({ id: record.id, status: "CANCELED" });
-                  }
-                }}
-              >
-                Remove
-              </button>
               {record.status !== "ACCEPT" && (
                 <button
                   type="button"
@@ -127,6 +105,19 @@ const LeaveManagement = () => {
                   Approve
                 </button>
               )}
+              <button
+                type="button"
+                className="items-center text-white bg-red-700 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto px-3 py-1 inline-flex text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+                onClick={() => {
+                  if (record.status === "ACCEPT") {
+                    showModal({ id: record.id, status: "PENDING" });
+                  } else if (record.status === "PENDING") {
+                    showModal({ id: record.id, status: "REJECT" });
+                  }
+                }}
+              >
+                Reject
+              </button>
             </Space>
           )}
         </>
@@ -142,12 +133,11 @@ const LeaveManagement = () => {
     const fetchLeave = async () => {
       try {
         const token = document.cookie
-        ? document.cookie
-            .split("; ")
-            .find((row) => row.startsWith("token="))
-            .split("=")[1]
-        : "none";
-        console.log(token);
+          ? document.cookie
+              .split("; ")
+              .find((row) => row.startsWith("token="))
+              .split("=")[1]
+          : "none";
         const response = await sendRequestWithToken(
           "https://tenten-server.adaptable.app/request/getAllRequest",
           "GET",
@@ -186,27 +176,35 @@ const LeaveManagement = () => {
             .find((row) => row.startsWith("token="))
             .split("=")[1]
         : "none";
+        // const url = 'http://localhost:3000/request/update-status'
     const response = await sendRequestWithToken(
       "https://tenten-server.adaptable.app/request/update-status",
+      // url,
       "POST",
       selectedLeave,
       token
     );
 
-    if (response) {
+    if (response.message === "SUCCESS") {
       const updatedLeave = leave.map((item) =>
-      item.id === selectedLeave.id
-        ? { ...item, status: selectedLeave.status }
-        : item
-    );
-    setLeave(updatedLeave);
+        item.id === selectedLeave.id ? { ...item, status: selectedLeave.status } : item
+      );
+      setLeave(updatedLeave);
       setIsModalOpen(false);
-      console.log("success");
+      messageApi.open({
+        type: "success",
+        content: "Update successfully",
+        duration: 3,
+      });
     } else {
-      console.log("Error");
+      messageApi.open({
+        type: "error",
+        content: "Error",
+        duration: 3,
+      });
     }
   };
-  
+
   const formatDate = (dateString) => {
     if (!dateString) {
       return "Loading...";
@@ -217,18 +215,28 @@ const LeaveManagement = () => {
   };
 
   return (
-    <div>
+    <div className="leaveManagement">
+      {contextHolder}
       <Header status={1}></Header>
       <div className="flex flex-row">
         <Sidebar />
         <div className="flex flex-col mx-auto justify-center text-center">
           <h1 className="mt-10 text-2xl font-medium">Leave application is pending approval</h1>
-          <div className="flex rounded-lg p-6 shadow-lg items-center">
-            <UserTable columns={columns} data={leave.filter((item) => item.status === "PENDING").concat(leave.filter((item) => item.status === "CANCEL"))} />
+          <div className="mx-auto flex rounded-lg p-6 shadow-lg items-center">
+            <UserTable
+              columns={columns}
+              data={[
+                ...leave.filter((item) => item.status === "PENDING"),
+                ...leave.filter((item) => item.status === "REJECT"),
+              ]}
+            />
           </div>
           <h1 className="mt-12 mb-6 text-2xl font-medium">Leave application approved</h1>
-          <div className="flex rounded-lg p-6 shadow-lg items-center">
-            <UserTable columns={columns} data={leave.filter((item) => item.status === "ACCEPT")} />
+          <div className="mx-auto flex rounded-lg p-6 shadow-lg items-center">
+            <UserTable
+              columns={columns.filter((column) => column.dataIndex !== "action")}
+              data={leave.filter((item) => item.status === "ACCEPT")}
+            />
           </div>
         </div>
       </div>

@@ -44,7 +44,6 @@ const SignInPage = () => {
       })
         .then((response) => {
           document.cookie = `token=${response.access_token}`;
-          // const response1 = await sendRequestWithToken("https://tenten-server.adaptable.app/account/info", "GET")
           router.push("/user");
         })
         .catch((err) => console.log("Error: ", err));

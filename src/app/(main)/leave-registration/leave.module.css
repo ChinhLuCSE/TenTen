@@ -1,7 +1,7 @@
 .form-container {
-  width: 70%;
+  width: 100%;
   padding: 30px 50px;
-  margin: 50px 50px;
+  margin-top: 50px;
 
   border-radius: 10px;
   border: 1px solid #f0f0f0;
@@ -10,7 +10,7 @@
 }
 
 .input-title {
-  width: 20%;
+  width: 40%;
   color: #6f737d;
   font-family: Be Vietnam Pro;
   font-size: 16px;
@@ -19,7 +19,7 @@
   line-height: normal;
 }
 .input-box {
-  width: 80%;
+  width: 60%;
   padding: 15px;
 
   color: #6f737d;
@@ -39,8 +39,6 @@
 
   width: 100%;
   border-bottom: 1px solid#DDD;
-  width: 100%;
-
   margin-bottom: 4px;
 }
 .buttons-container {
