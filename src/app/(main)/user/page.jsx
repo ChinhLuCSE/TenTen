@@ -74,7 +74,8 @@ const UserInformation = () => {
       modifiedFields.gender = user.gender;
     }
     if (user.birthday !== originalUser.birthday) {
-      modifiedFields.birthday = user.birthday;
+      const modifiedBirthday = new Date(user.birthday);
+      modifiedFields.birthday = modifiedBirthday;
     }
     if (user.address !== originalUser.address) {
       modifiedFields.address = user.address;

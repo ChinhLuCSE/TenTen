@@ -19,9 +19,12 @@ const EmployeeManagement = () => {
   const [messageApi, contextHolder] = message.useMessage();
 
   const formatDate = (dateString) => {
+    if (!dateString) {
+      return "Loading...";
+    }
+
     const date = new Date(dateString);
-    const formattedDate = date.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" });
-    return formattedDate;
+    return date.toISOString().split("T")[0];
   };
 
   const columns = [
@@ -75,11 +78,12 @@ const EmployeeManagement = () => {
     {
       title: "Action",
       key: "action",
-      render: (_, record) => (
+      render: (_, record, index) => (
         <Space size="middle">
           <button
             type="button"
             className="items-center text-white bg-blue-900 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-3 py-1 inline-flex text-center "
+            id={++index}
             onClick={() => showUpdateModal(record.id)}
           >
             Update
@@ -175,7 +179,8 @@ const EmployeeManagement = () => {
       modifiedFields.gender = selectedEmployee.gender;
     }
     if (selectedEmployee.birthday !== originSelectedEmployee.birthday) {
-      modifiedFields.birthday = selectedEmployee.birthday;
+      const modifiedBirthday = new Date(selectedEmployee.birthday);
+      modifiedFields.birthday = modifiedBirthday;
     }
     if (selectedEmployee.address !== originSelectedEmployee.address) {
       modifiedFields.address = selectedEmployee.address;
@@ -291,7 +296,7 @@ const EmployeeManagement = () => {
                 <div className="relative z-0 w-full mb-6 group border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600">
                   <label className="inline-block w-1/4 text-left text-gray-600">Birth of Date</label>
                   <input
-                    type="text"
+                    type="date"
                     id="birthDate"
                     name="birthDate"
                     placeholder="Enter your birth date"
