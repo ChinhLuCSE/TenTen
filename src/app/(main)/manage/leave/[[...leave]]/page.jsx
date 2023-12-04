@@ -138,17 +138,15 @@ const LeaveManagement = () => {
               .find((row) => row.startsWith("token="))
               .split("=")[1]
           : "none";
-        console.log(token);
-        // const url = 'http://localhost:3000/request/getAllRequest' // Sang
         const response = await sendRequestWithToken(
           "https://tenten-server.adaptable.app/request/getAllRequest",
-          // url, // Sang
           "GET",
           null,
           token
         );
 
         if (response) {
+          console.log(response);
           setLeave(response);
         } else {
           console.log("Failed to fetch information");
@@ -187,7 +185,7 @@ const LeaveManagement = () => {
       token
     );
 
-    if (response) {
+    if (response.message === "SUCCESS") {
       const updatedLeave = leave.map((item) =>
         item.id === selectedLeave.id ? { ...item, status: selectedLeave.status } : item
       );
