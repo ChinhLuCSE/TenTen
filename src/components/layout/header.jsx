@@ -12,7 +12,8 @@ const Header = ({ status}) => {
   const [dataNotif, setDataNotif] = useState([]);
   const [numNotif, setNumNotif] = useState(0);
   useEffect(() => {
-    const token = document.cookie
+    if(status == 1) {
+      const token = document.cookie
       .split("; ")
       .find((row) => row.startsWith("token="))
       .split("=")[1];
@@ -61,6 +62,7 @@ const Header = ({ status}) => {
         socket.disconnect();
       };
     });
+    }
   }, []);
 
   const handleNotifClick = () => {
