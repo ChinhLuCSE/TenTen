@@ -46,7 +46,10 @@ const SignInPage = () => {
           document.cookie = `token=${response.access_token}`;
           router.push("/user");
         })
-        .catch((err) => console.log("Error: ", err));
+        .catch((err) => {
+          console.log("Error: ", err);
+          setShowWarning(true);
+        });
     } else {
       setShowWarning(true);
     }
