@@ -39,9 +39,9 @@ const Header = ({ status }) => {
       };
 
       fetchUserInfo((user) => {
-        // console.log('heeee');
-        const socket = io('https://tenten-server.adaptable.app:4000');
-        // const socket = io('http://localhost:3000');
+        console.log('heeee');
+        const socket = io('https://tenten-server.adaptable.app');
+        // const socket = io("http://localhost:4000");
 
         socket.on('init', ({ data }) => {
           setDataNotif(data.sort((a, b) => (new Date(b.time).getTime() - new Date(a.time).getTime())));
