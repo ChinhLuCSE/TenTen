@@ -39,19 +39,18 @@ const Header = ({ status }) => {
       };
 
       fetchUserInfo((user) => {
-        console.log('heeee');
         const socket = io('https://tenten-server.adaptable.app');
         // const socket = io("http://localhost:4000");
 
         socket.on('init', ({ data }) => {
-          setDataNotif(data.sort((a, b) => (new Date(b.time).getTime() - new Date(a.time).getTime())));
-          setNumNotif(data.filter(i => i.status == '0').length);
+          if(data.userId == user.id)
+          setDataNotif(data.data.sort((a, b) => (new Date(b.time).getTime() - new Date(a.time).getTime())));
+          setNumNotif(data.data.filter(i => i.status == '0').length);
         });
         socket.on('create', ({ data }) => {
           if (user && user.role == 'ADMIN') {
             setDataNotif(data.filter(i => i.title == 'A new leave request').sort((a, b) => (new Date(b.time).getTime() - new Date(a.time).getTime())));
             setNumNotif(data.filter(i => i.title == 'A new leave request' && i.status == '0').length);
-
           }
         });
         socket.on('handle', ({ data }) => {
