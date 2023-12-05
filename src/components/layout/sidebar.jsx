@@ -11,8 +11,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { sendRequestWithToken } from "@/service/request";
+import { useRouter } from "next/navigation";
 
 const Sidebar = () => {
+  const router = useRouter();
   const [user, setUser] = useState({});
 
   const pathname = usePathname(); // todo: implement on selected navigation option
@@ -65,9 +67,25 @@ const Sidebar = () => {
               height={32}
               alt="avatar"
             ></Image>
-            <span className="font-bold" >{user.name}</span>
-            <Link href="/sign-in" onClick={handleLogout}> Đăng xuất
-            </Link>
+            <span className="font-bold">{user.name}</span>
+            {user?.id == undefined ? (
+              <button
+                type="button"
+                className="items-center text-white bg-blue-900 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-lg w-full sm:w-auto px-5 py-1.5 inline-flex text-center mt-2"
+                onClick={() => router.push("/sign-in")}
+              >
+                Log In
+              </button>
+            ) : (
+              <Link
+                className="font-semibold text-blue-700 "
+                href="/sign-in"
+                onClick={handleLogout}
+              >
+                {" "}
+                Log Out
+              </Link>
+            )}
             {/* <button className="font-bold" style={{ borderStyle: 'groove' }} onClick={() => handleLogout()}>Đăng xuất</button> */}
           </div>
           <ul className="space-y-2 font-medium">
